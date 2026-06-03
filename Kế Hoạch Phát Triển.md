@@ -45,10 +45,10 @@
 ### **Ngày 2 — Hoàn thiện nội dung & data (3–4 giờ) (crawl data thật)**
 
 #### Việc cần làm:
-- [ ] **Bổ sung danh sách tướng** — hiện tại có ~60 tướng, cần thêm đủ ~100+ tướng mới nhất. 
-- [ ] **Cập nhật bảng Meta** — tra cứu meta mùa hiện tại (Reddit/YouTube LQ)
-- [ ] **Thêm thông tin tướng**: winrate %, vai trò phụ, độ khó (1-3 sao)
-- [ ] **Thêm filter Độ khó** bên cạnh filter Role
+- [x] **Bổ sung danh sách tướng** — hiện tại có ~60 tướng, cần thêm đủ ~100+ tướng mới nhất. 
+- [x] **Cập nhật bảng Meta** — tra cứu meta mùa hiện tại (Reddit/YouTube LQ)
+- [x] **Thêm thông tin tướng**: winrate %, vai trò phụ, độ khó (1-3 sao)
+- [x] **Thêm filter Độ khó** bên cạnh filter Role
 - [ ] **Kiểm tra mobile UX** trên điện thoại thật
 
 #### File cấu trúc data nên tách riêng:
@@ -72,10 +72,10 @@ const HEROES = [
 ### **Ngày 3 — SEO & Google Analytics (2–3 giờ)**
 
 #### SEO On-page (đã có cơ bản, cần bổ sung):
-- [ ] Thêm **Schema markup** (WebApplication type)
-- [ ] Tạo file **sitemap.xml**
-- [ ] Tạo file **robots.txt**
-- [ ] Thêm **Open Graph image** (1200x630px) để share đẹp trên Facebook/Zalo
+- [x] Thêm **Schema markup** (WebApplication type)
+- [x] Tạo file **sitemap.xml**
+- [x] Tạo file **robots.txt**
+- [x] Thêm **Open Graph image** (1200x630px) để share đẹp trên Facebook/Zalo
 - [ ] Đăng ký **Google Search Console** → submit sitemap
 
 #### Tạo sitemap.xml:
@@ -115,8 +115,8 @@ Sitemap: https://randomtuong.netlify.app/sitemap.xml
 - ⚠️ Cần có lưu lượng truy cập cơ bản
 
 #### Các bước:
-- [ ] Tạo trang **Privacy Policy** (dùng generator miễn phí: privacypolicygenerator.info)
-- [ ] Thêm link Privacy Policy vào footer
+- [x] Tạo trang **Privacy Policy** (dùng generator miễn phí: privacypolicygenerator.info)
+- [x] Thêm link Privacy Policy vào footer
 - [ ] Đăng ký **Google AdSense** (adsense.google.com)
 - [ ] Dán code AdSense vào `<head>`
 - [ ] Thay placeholder quảng cáo bằng code AdSense thật
@@ -138,8 +138,8 @@ Sitemap: https://randomtuong.netlify.app/sitemap.xml
 - [ ] Test trên **iPhone Safari** và **Android Chrome**
 - [ ] Test tốc độ tại **PageSpeed Insights** (pagespeed.web.dev) — mục tiêu >90 điểm
 - [ ] Kiểm tra **không có lỗi console** (F12 → Console)
-- [ ] Thêm **favicon** (icon tab trình duyệt)
-- [ ] Thêm **manifest.json** để có thể Add to Home Screen
+- [x] Thêm **favicon** (icon tab trình duyệt)
+- [x] Thêm **manifest.json** để có thể Add to Home Screen
 
 #### Kênh chia sẻ để có traffic đầu tiên (miễn phí):
 ```
