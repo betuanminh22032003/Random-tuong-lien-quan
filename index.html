@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Tướng Liên Quân | Công Cụ Random Miễn Phí</title>
+<meta name="description" content="Random tướng Liên Quân Mobile ngẫu nhiên, random đội 5v5, lọc theo role, bảng meta tướng mạnh. Công cụ miễn phí cho game thủ Liên Quân.">
+<meta name="keywords" content="random tướng liên quân, liên quân mobile, tướng mạnh liên quân, random đội liên quân, meta tướng liên quân 2024">
+<meta property="og:title" content="Random Tướng Liên Quân Mobile">
+<meta property="og:description" content="Công cụ random tướng Liên Quân miễn phí — random đội, lọc role, bảng meta">
+<style>
+  :root {
+    --gold: #c8a84b;
+    --gold-light: #f0d080;
+    --blue-dark: #0a0e1a;
+    --blue-mid: #0d1530;
+    --blue-accent: #1a2a5e;
+    --cyan: #00e5ff;
+    --cyan-dim: #0099bb;
+    --red: #ff4444;
+    --green: #44ff88;
+    --text: #d4c89a;
+    --text-dim: #8a7d5a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--blue-dark);
+    color: var(--text);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    min-height: 100vh;
+  }
+  /* AD BANNER */
+  .ad-top {
+    background: #111827;
+    border-bottom: 1px solid var(--gold);
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  /* HEADER */
+  header {
+    background: linear-gradient(180deg, #0a0e1a 0%, #0d1530 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 16px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.12) 0%, transparent 70%);
+  }
+  header h1 {
+    font-size: 22px;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(200,168,75,0.6);
+    position: relative;
+  }
+  header p { font-size: 12px; color: var(--text-dim); margin-top: 4px; position: relative; }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    background: var(--blue-mid);
+    border-bottom: 1px solid var(--blue-accent);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 1; min-width: 80px;
+    padding: 10px 6px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab.active { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.04); }
+
+  /* PAGES */
+  .page { display: none; padding: 16px; }
+  .page.active { display: block; }
+
+  /* SECTION TITLE */
+  .sec-title {
+    text-align: center;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  /* RANDOM HERO CARD */
+  .hero-card {
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-accent));
+    border: 1px solid var(--gold);
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    min-height: 180px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .hero-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,229,255,0.06) 0%, transparent 70%);
+  }
+  .hero-avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    background: var(--blue-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    margin-bottom: 12px;
+    box-shadow: 0 0 24px rgba(200,168,75,0.4);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .hero-avatar.spinning { animation: spin-glow 0.08s linear infinite; }
+  @keyframes spin-glow {
+    0% { box-shadow: 0 0 24px rgba(200,168,75,0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 40px rgba(0,229,255,0.7); transform: scale(1.05); }
+    100% { box-shadow: 0 0 24px rgba(200,168,75,0.4); transform: scale(1); }
+  }
+  .hero-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-shadow: 0 0 12px rgba(200,168,75,0.5);
+    letter-spacing: 1px;
+    position: relative;
+  }
+  .hero-role-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .hero-placeholder { color: var(--text-dim); font-size: 14px; }
+
+  /* BTN */
+  .btn-random {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #b8860b, var(--gold), #b8860b);
+    color: #0a0e1a;
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 16px rgba(200,168,75,0.4);
+  }
+  .btn-random:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(200,168,75,0.6); }
+  .btn-random:active { transform: translateY(0); }
+
+  /* FILTER PILLS */
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--blue-accent);
+    background: var(--blue-mid);
+    color: var(--text-dim);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .pill.active, .pill:hover { border-color: var(--gold); color: var(--gold-light); background: rgba(200,168,75,0.1); }
+
+  /* TEAM GRID */
+  .teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  .team-box {
+    background: var(--blue-mid);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .team-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+  .team-header.blue { background: rgba(0,100,255,0.3); color: #6699ff; border-bottom: 1px solid #334; }
+  .team-header.red { background: rgba(255,50,50,0.3); color: #ff7777; border-bottom: 1px solid #433; }
+  .team-member {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .member-icon { font-size: 18px; }
+  .member-name { font-weight: 600; color: var(--text); font-size: 12px; }
+  .member-role { font-size: 10px; color: var(--text-dim); }
+
+  /* BAN/PICK */
+  .bp-phase {
+    background: var(--blue-mid);
+    border: 1px solid var(--blue-accent);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .bp-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .bp-slots { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bp-slot {
+    width: 52px; height: 52px;
+    border-radius: 6px;
+    background: var(--blue-accent);
+    border: 1px dashed rgba(200,168,75,0.3);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text-dim);
+    text-align: center;
+    overflow: hidden;
+  }
+  .bp-slot.filled { border-style: solid; border-color: var(--gold); }
+  .bp-slot.ban-filled { border-color: var(--red); background: rgba(255,68,68,0.1); }
+  .bp-slot .slot-emoji { font-size: 22px; }
+  .bp-slot .slot-name { font-size: 9px; margin-top: 2px; color: var(--text); }
+  .bp-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+  .btn-sm {
+    flex: 1; padding: 10px 8px;
+    border: none; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-ban { background: rgba(255,68,68,0.2); color: var(--red); border: 1px solid var(--red); }
+  .btn-ban:hover { background: rgba(255,68,68,0.4); }
+  .btn-pick-blue { background: rgba(0,100,255,0.2); color: #6699ff; border: 1px solid #446; }
+  .btn-pick-blue:hover { background: rgba(0,100,255,0.4); }
+  .btn-pick-red { background: rgba(255,50,50,0.15); color: #ff9999; border: 1px solid #644; }
+  .btn-pick-red:hover { background: rgba(255,50,50,0.3); }
+  .btn-reset-sm { background: rgba(200,168,75,0.15); color: var(--gold); border: 1px solid rgba(200,168,75,0.4); }
+  .btn-reset-sm:hover { background: rgba(200,168,75,0.3); }
+  .bp-status {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cyan);
+    padding: 8px;
+    background: rgba(0,229,255,0.06);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    min-height: 34px;
+  }
+
+  /* META TABLE */
+  .tier-group { margin-bottom: 12px; }
+  .tier-label {
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 6px 12px;
+    border-radius: 6px 6px 0 0;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tier-S .tier-label { background: rgba(255,80,80,0.25); color: #ff6666; }
+  .tier-A .tier-label { background: rgba(255,160,0,0.2); color: #ffaa44; }
+  .tier-B .tier-label { background: rgba(200,168,75,0.15); color: var(--gold); }
+  .tier-C .tier-label { background: rgba(100,100,130,0.2); color: #aaaacc; }
+  .tier-heroes { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; background: var(--blue-mid); border-radius: 0 0 6px 6px; }
+  .tier-hero {
+    background: var(--blue-accent);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 4px 10px 4px 6px;
+    font-size: 11px; color: var(--text);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* AD MID */
+  .ad-mid {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(200,168,75,0.2);
+    border-radius: 8px;
+    text-align: center;
+    padding: 20px;
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 16px 0;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 11px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--blue-accent);
+    line-height: 1.8;
+  }
+
+  /* ROLE COLORS */
+  .role-tank { background: rgba(0,150,255,0.2); color: #66aaff; }
+  .role-jungle { background: rgba(0,200,100,0.2); color: #44dd88; }
+  .role-mid { background: rgba(200,100,255,0.2); color: #cc88ff; }
+  .role-marksman { background: rgba(255,180,0,0.2); color: #ffcc44; }
+  .role-support { background: rgba(0,220,220,0.2); color: #44dddd; }
+  .role-assassin { background: rgba(255,60,60,0.2); color: #ff6666; }
+  .role-warrior { background: rgba(255,120,0,0.2); color: #ff9944; }
+  .role-mage { background: rgba(150,0,255,0.2); color: #aa66ff; }
+</style>
+</head>
+<body>
+
+<div class="ad-top">📢 Quảng cáo — Google AdSense Banner 728x90</div>
+
+<header>
+  <h1>⚔️ Random Tướng Liên Quân</h1>
+  <p>Công cụ random tướng miễn phí | Liên Quân Mobile VN</p>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" onclick="switchTab('random')">🎲 Random</div>
+  <div class="tab" onclick="switchTab('team')">👥 5v5</div>
+  <div class="tab" onclick="switchTab('banpick')">🛡️ Ban/Pick</div>
+  <div class="tab" onclick="switchTab('meta')">📊 Meta</div>
+</nav>
+
+<!-- PAGE: RANDOM -->
+<div class="page active" id="page-random">
+  <p class="sec-title">Random Tướng Ngẫu Nhiên</p>
+  <div class="hero-card" id="hero-card">
+    <div class="hero-avatar" id="hero-avatar">
+      <span id="hero-emoji">🎮</span>
+    </div>
+    <div class="hero-name" id="hero-name">
+      <span class="hero-placeholder">Nhấn Random để bắt đầu</span>
+    </div>
+    <span class="hero-role-badge" id="hero-role-badge" style="display:none"></span>
+  </div>
+
+  <div style="margin-bottom:12px">
+    <p style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Lọc theo Role</p>
+    <div class="pills" id="filter-pills">
+      <div class="pill active" data-role="all" onclick="selectRole(this)">🎯 Tất cả</div>
+      <div class="pill" data-role="Tank" onclick="selectRole(this)">🛡️ Tank</div>
+      <div class="pill" data-role="Jungle" onclick="selectRole(this)">🌿 Jungle</div>
+      <div class="pill" data-role="Mid" onclick="selectRole(this)">🔮 Mid</div>
+      <div class="pill" data-role="Marksman" onclick="selectRole(this)">🏹 Xạ thủ</div>
+      <div class="pill" data-role="Support" onclick="selectRole(this)">💊 Support</div>
+      <div class="pill" data-role="Assassin" onclick="selectRole(this)">🗡️ Sát thủ</div>
+    </div>
+  </div>
+
+  <button class="btn-random" onclick="randomHero()">🎲 RANDOM TƯỚNG</button>
+
+  <div class="ad-mid">📢 Quảng cáo — AdSense 320x100 (Mobile Banner)</div>
+
+  <div style="background:var(--blue-mid);border-radius:8px;padding:12px;font-size:12px;color:var(--text-dim);line-height:1.8">
+    <strong style="color:var(--gold)">💡 Hướng dẫn sử dụng:</strong><br>
+    • Nhấn <strong>Random Tướng</strong> để quay ngẫu nhiên<br>
+    • Dùng bộ lọc role để random theo vị trí cụ thể<br>
+    • Vào tab <strong>5v5</strong> để chia đội ngẫu nhiên<br>
+    • Xem tab <strong>Meta</strong> để biết tướng mạnh mùa này
+  </div>
+</div>
+
+<!-- PAGE: TEAM 5v5 -->
+<div class="page" id="page-team">
+  <p class="sec-title">Random Đội 5v5</p>
+  <div id="teams-display">
+    <div style="text-align:center;color:var(--text-dim);font-size:13px;padding:24px 0">
+      Nhấn nút bên dưới để chia đội ngẫu nhiên
+    </div>
+  </div>
+  <button class="btn-random" onclick="randomTeams()">⚔️ RANDOM ĐỘI 5v5</button>
+  <div class="ad-mid">📢 Quảng cáo — AdSense 320x100</div>
+</div>
+
+<!-- PAGE: BAN/PICK -->
+<div class="page" id="page-banpick">
+  <p class="sec-title">Chế Độ Ban / Pick</p>
+  <div class="bp-status" id="bp-status">Nhấn một hành động để bắt đầu</div>
+  <div class="bp-controls">
+    <button class="btn-sm btn-ban" onclick="bpAction('ban')">🚫 BAN</button>
+    <button class="btn-sm btn-pick-blue" onclick="bpAction('pick-blue')">🔵 PICK Xanh</button>
+    <button class="btn-sm btn-pick-red" onclick="bpAction('pick-red')">🔴 PICK Đỏ</button>
+    <button class="btn-sm btn-reset-sm" onclick="bpReset()">↺</button>
+  </div>
+  <div class="bp-phase">
+    <div class="bp-label">🚫 Tướng bị cấm</div>
+    <div class="bp-slots" id="bp-ban-slots"></div>
+  </div>
+  <div class="bp-phase">
+    <div class="bp-label" style="color:#6699ff">🔵 Đội Xanh</div>
+    <div class="bp-slots" id="bp-blue-slots"></div>
+  </div>
+  <div class="bp-phase">
+    <div class="bp-label" style="color:#ff7777">🔴 Đội Đỏ</div>
+    <div class="bp-slots" id="bp-red-slots"></div>
+  </div>
+  <div class="ad-mid">📢 Quảng cáo — AdSense 320x100</div>
+</div>
+
+<!-- PAGE: META -->
+<div class="page" id="page-meta">
+  <p class="sec-title">Bảng Meta Tướng Mạnh</p>
+  <div style="font-size:11px;color:var(--text-dim);text-align:center;margin-bottom:14px">Cập nhật theo mùa giải hiện tại • Liên Quân Mobile</div>
+
+  <div id="meta-table"></div>
+
+  <div class="ad-mid">📢 Quảng cáo — AdSense 320x100</div>
+
+  <div style="background:var(--blue-mid);border-radius:8px;padding:12px;font-size:11px;color:var(--text-dim);line-height:1.8">
+    <strong style="color:var(--gold)">📌 Lưu ý:</strong> Bảng meta mang tính tham khảo, hiệu quả còn phụ thuộc vào skill và chiến thuật đội. S = Rất mạnh, A = Mạnh, B = Ổn, C = Cần buff.
+  </div>
+</div>
+
+<footer>
+  <strong style="color:var(--gold)">RandomTuong.vn</strong> — Công cụ random tướng Liên Quân Mobile miễn phí<br>
+  <span>Random tướng | Random đội 5v5 | Ban Pick | Meta tướng mạnh</span><br>
+  <span style="font-size:10px">© 2024 RandomTuong.vn — Không thuộc về Garena hay VNG</span>
+</footer>
+
+<script>
+const HEROES = [
+  {name:"Airi",role:"Assassin",emoji:"⚔️"},
+  {name:"Aleister",role:"Support",emoji:"🔮"},
+  {name:"Alice",role:"Mage",emoji:"🪄"},
+  {name:"Annette",role:"Support",emoji:"🌀"},
+  {name:"Arduin",role:"Tank",emoji:"🛡️"},
+  {name:"Astrid",role:"Tank",emoji:"⚓"},
+  {name:"Baldum",role:"Tank",emoji:"🏋️"},
+  {name:"Batman",role:"Assassin",emoji:"🦇"},
+  {name:"Bright",role:"Marksman",emoji:"💫"},
+  {name:"Butterfly",role:"Assassin",emoji:"🦋"},
+  {name:"Capheny",role:"Marksman",emoji:"🔧"},
+  {name:"Cresht",role:"Tank",emoji:"🦀"},
+  {name:"D'Arcy",role:"Mage",emoji:"🌙"},
+  {name:"Diao Chan",role:"Mage",emoji:"🌸"},
+  {name:"Eland'orr",role:"Assassin",emoji:"🌿"},
+  {name:"Elsu",role:"Marksman",emoji:"🏹"},
+  {name:"Errol",role:"Assassin",emoji:"🗡️"},
+  {name:"Esme",role:"Support",emoji:"💉"},
+  {name:"Florentino",role:"Warrior",emoji:"🌹"},
+  {name:"Garo",role:"Assassin",emoji:"🎌"},
+  {name:"Gildur",role:"Tank",emoji:"💛"},
+  {name:"Ignis",role:"Mage",emoji:"🔥"},
+  {name:"Ilumia",role:"Mage",emoji:"✨"},
+  {name:"Jinnar",role:"Mage",emoji:"⚡"},
+  {name:"Joker",role:"Assassin",emoji:"🃏"},
+  {name:"Kriknak",role:"Jungle",emoji:"🐛"},
+  {name:"Krixi",role:"Mage",emoji:"🌟"},
+  {name:"Laville",role:"Marksman",emoji:"🔫"},
+  {name:"Lauriel",role:"Mage",emoji:"🪽"},
+  {name:"Liliana",role:"Mage",emoji:"🌺"},
+  {name:"Lu Bu",role:"Warrior",emoji:"⚔️"},
+  {name:"Lumburr",role:"Tank",emoji:"🪨"},
+  {name:"Mage",role:"Support",emoji:"💜"},
+  {name:"Maloch",role:"Tank",emoji:"👹"},
+  {name:"Mina",role:"Tank",emoji:"💎"},
+  {name:"Mganga",role:"Support",emoji:"🥁"},
+  {name:"Nakroth",role:"Assassin",emoji:"🌙"},
+  {name:"Natalya",role:"Mage",emoji:"❄️"},
+  {name:"Ormarr",role:"Tank",emoji:"🔨"},
+  {name:"Osana",role:"Support",emoji:"🎀"},
+  {name:"Omen",role:"Jungle",emoji:"🐍"},
+  {name:"Paine",role:"Warrior",emoji:"🗡️"},
+  {name:"Qi",role:"Jungle",emoji:"🐉"},
+  {name:"Raz",role:"Mage",emoji:"🔵"},
+  {name:"Riktor",role:"Jungle",emoji:"⛓️"},
+  {name:"Ryoma",role:"Warrior",emoji:"🌊"},
+  {name:"Slimz",role:"Jungle",emoji:"🦎"},
+  {name:"Superman",role:"Warrior",emoji:"🦸"},
+  {name:"Tel'Annas",role:"Marksman",emoji:"🌿"},
+  {name:"Thane",role:"Tank",emoji:"👑"},
+  {name:"Tulen",role:"Mage",emoji:"⚡"},
+  {name:"Veera",role:"Jungle",emoji:"🕷️"},
+  {name:"Violet",role:"Marksman",emoji:"💜"},
+  {name:"Valhein",role:"Marksman",emoji:"🗡️"},
+  {name:"Wisp",role:"Marksman",emoji:"🔆"},
+  {name:"Wonder Woman",role:"Warrior",emoji:"🛡️"},
+  {name:"Wiro",role:"Mage",emoji:"🎭"},
+  {name:"Xeniel",role:"Tank",emoji:"👼"},
+  {name:"Yena",role:"Assassin",emoji:"⚔️"},
+  {name:"Zata",role:"Jungle",emoji:"🔪"},
+  {name:"Zephys",role:"Jungle",emoji:"💨"},
+  {name:"Zill",role:"Mage",emoji:"🌪️"},
+];
+
+const META = {
+  S: [{name:"Florentino",emoji:"🌹"},{name:"Tulen",emoji:"⚡"},{name:"Qi",emoji:"🐉"},{name:"Capheny",emoji:"🔧"},{name:"Maloch",emoji:"👹"},{name:"Zephys",emoji:"💨"}],
+  A: [{name:"Nakroth",emoji:"🌙"},{name:"Violet",emoji:"💜"},{name:"Xeniel",emoji:"👼"},{name:"Laville",emoji:"🔫"},{name:"Raz",emoji:"🔵"},{name:"Veera",emoji:"🕷️"},{name:"Ryoma",emoji:"🌊"}],
+  B: [{name:"Tel'Annas",emoji:"🌿"},{name:"Valhein",emoji:"🗡️"},{name:"Lauriel",emoji:"🪽"},{name:"Batman",emoji:"🦇"},{name:"Garo",emoji:"🎌"},{name:"Ilumia",emoji:"✨"},{name:"Arduin",emoji:"🛡️"}],
+  C: [{name:"Alice",emoji:"🪄"},{name:"Lu Bu",emoji:"⚔️"},{name:"Annette",emoji:"🌀"},{name:"Bright",emoji:"💫"},{name:"Baldum",emoji:"🏋️"}],
+};
+
+const ROLE_COLORS = {
+  Tank:'role-tank', Jungle:'role-jungle', Mid:'role-mid', Marksman:'role-marksman',
+  Support:'role-support', Assassin:'role-assassin', Warrior:'role-warrior', Mage:'role-mage'
+};
+
+let selectedRole = 'all';
+let bpState = { bans:[], blue:[], red:[] };
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('page-'+tab).classList.add('active');
+}
+
+function selectRole(el) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  selectedRole = el.dataset.role;
+}
+
+function getPool() {
+  return selectedRole === 'all' ? HEROES : HEROES.filter(h => h.role === selectedRole);
+}
+
+function randomHero() {
+  const pool = getPool();
+  if (!pool.length) return;
+  const av = document.getElementById('hero-avatar');
+  const nm = document.getElementById('hero-name');
+  const badge = document.getElementById('hero-role-badge');
+  av.classList.add('spinning');
+  nm.innerHTML = '<span class="hero-placeholder">...</span>';
+  badge.style.display = 'none';
+  let count = 0;
+  const interval = setInterval(() => {
+    const tmp = pool[Math.floor(Math.random()*pool.length)];
+    document.getElementById('hero-emoji').textContent = tmp.emoji;
+    count++;
+    if (count >= 14) {
+      clearInterval(interval);
+      const hero = pool[Math.floor(Math.random()*pool.length)];
+      av.classList.remove('spinning');
+      document.getElementById('hero-emoji').textContent = hero.emoji;
+      nm.textContent = hero.name;
+      badge.textContent = hero.role;
+      badge.className = 'hero-role-badge ' + (ROLE_COLORS[hero.role]||'');
+      badge.style.display = 'inline-block';
+    }
+  }, 60);
+}
+
+function randomTeams() {
+  const shuffled = [...HEROES].sort(()=>Math.random()-0.5).slice(0,10);
+  const blue = shuffled.slice(0,5), red = shuffled.slice(5,10);
+  const lanes = ['🛡️ Tank/ĐC','🌿 Jungle','🔮 Mid','🏹 Xạ thủ','💊 Support'];
+  const makeMembers = (team) => team.map((h,i) =>
+    `<div class="team-member"><span class="member-icon">${h.emoji}</span><div><div class="member-name">${h.name}</div><div class="member-role">${lanes[i]}</div></div></div>`
+  ).join('');
+  document.getElementById('teams-display').innerHTML = `
+    <div class="teams">
+      <div class="team-box"><div class="team-header blue">🔵 Đội Xanh</div>${makeMembers(blue)}</div>
+      <div class="team-box"><div class="team-header red">🔴 Đội Đỏ</div>${makeMembers(red)}</div>
+    </div>`;
+}
+
+function bpRenderSlots() {
+  const makeSlot = (item, isBan) => {
+    if (!item) return `<div class="bp-slot"><span style="font-size:18px;opacity:.3">?</span></div>`;
+    return `<div class="bp-slot ${isBan?'ban-filled':'filled'}"><span class="slot-emoji">${item.emoji}</span><span class="slot-name">${item.name}</span></div>`;
+  };
+  const banSlots = Array(6).fill(null).map((_,i) => makeSlot(bpState.bans[i]||null, true)).join('');
+  const blueSlots = Array(5).fill(null).map((_,i) => makeSlot(bpState.blue[i]||null, false)).join('');
+  const redSlots = Array(5).fill(null).map((_,i) => makeSlot(bpState.red[i]||null, false)).join('');
+  document.getElementById('bp-ban-slots').innerHTML = banSlots;
+  document.getElementById('bp-blue-slots').innerHTML = blueSlots;
+  document.getElementById('bp-red-slots').innerHTML = redSlots;
+}
+
+function bpAction(type) {
+  const used = [...bpState.bans, ...bpState.blue, ...bpState.red].map(h=>h.name);
+  const avail = HEROES.filter(h => !used.includes(h.name));
+  if (!avail.length) { document.getElementById('bp-status').textContent = '🏁 Đã đủ tướng!'; return; }
+  const hero = avail[Math.floor(Math.random()*avail.length)];
+  let msg = '';
+  if (type === 'ban' && bpState.bans.length < 6) {
+    bpState.bans.push(hero);
+    msg = `🚫 Cấm tướng: ${hero.emoji} ${hero.name}`;
+  } else if (type === 'pick-blue' && bpState.blue.length < 5) {
+    bpState.blue.push(hero);
+    msg = `🔵 Xanh chọn: ${hero.emoji} ${hero.name}`;
+  } else if (type === 'pick-red' && bpState.red.length < 5) {
+    bpState.red.push(hero);
+    msg = `🔴 Đỏ chọn: ${hero.emoji} ${hero.name}`;
+  } else {
+    msg = '⚠️ Đã đủ slot cho hành động này!';
+  }
+  document.getElementById('bp-status').textContent = msg;
+  bpRenderSlots();
+}
+
+function bpReset() {
+  bpState = { bans:[], blue:[], red:[] };
+  document.getElementById('bp-status').textContent = 'Nhấn một hành động để bắt đầu';
+  bpRenderSlots();
+}
+
+function renderMeta() {
+  const tiers = ['S','A','B','C'];
+  const colors = {S:'tier-S',A:'tier-A',B:'tier-B',C:'tier-C'};
+  const labels = {S:'🔥 S — Siêu mạnh',A:'⭐ A — Rất mạnh',B:'✅ B — Ổn định',C:'⬇️ C — Cần buff'};
+  document.getElementById('meta-table').innerHTML = tiers.map(t =>
+    `<div class="tier-group ${colors[t]}">
+      <div class="tier-label">${labels[t]}</div>
+      <div class="tier-heroes">${(META[t]||[]).map(h =>
+        `<div class="tier-hero">${h.emoji} ${h.name}</div>`
+      ).join('')}</div>
+    </div>`
+  ).join('');
+}
+
+// Init
+bpRenderSlots();
+renderMeta();
+</script>
+</body>
+</html>
