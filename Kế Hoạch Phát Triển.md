@@ -7,11 +7,11 @@
 
 | Hạng mục | Chi tiết |
 |---|---|
-| Loại sản phẩm | Static Web App (HTML/CSS/JS thuần) |
+| Loại sản phẩm | Static Web App (Next.js 14 SSG) |
 | Ngôn ngữ | Tiếng Việt |
 | Target user | Game thủ Liên Quân Mobile VN |
 | Mô hình kiếm tiền | Google AdSense |
-| Stack kỹ thuật | HTML + CSS + Vanilla JS (không cần framework) |
+| Stack kỹ thuật | **Next.js 14** + TypeScript + Pages Router + Static Export (`output: 'export'`) |
 | Hosting | Netlify (Free tier) |
 | Domain | Netlify subdomain miễn phí (.netlify.app) → sau nâng lên domain riêng |
 
@@ -152,18 +152,31 @@ Sitemap: https://randomtuong.netlify.app/sitemap.xml
 
 ---
 
-## 🏗️ KIẾN TRÚC FILE PROJECT
+## 🏗️ KIẾN TRÚC FILE PROJECT (V2 — Next.js 14)
 
 ```
 random-tuong-lien-quan/
-├── index.html          ← File chính (đã có)
-├── heroes-data.js      ← Tách data tướng ra file riêng
-├── sitemap.xml         ← SEO
-├── robots.txt          ← SEO
-├── privacy-policy.html ← Bắt buộc cho AdSense
-├── favicon.ico         ← Icon tab
-├── og-image.png        ← Ảnh share mạng xã hội (1200x630)
-└── manifest.json       ← PWA (Add to Home Screen)
+├── src/
+│   ├── data/
+│   │   └── heroes.ts          ← 126 tướng + interface + slugify()
+│   ├── pages/
+│   │   ├── _app.tsx           ← Theme toggle (dark/light)
+│   │   ├── _document.tsx      ← HTML shell
+│   │   ├── index.tsx          ← Main tool (Random/5v5/BanPick/Meta)
+│   │   ├── privacy-policy.tsx ← Privacy page
+│   │   └── tuong/
+│   │       └── [slug].tsx     ← 126 trang SSG tướng (SEO)
+│   └── styles/
+│       └── globals.css        ← CSS gốc + dark/light theme vars
+├── public/                    ← Static assets
+│   ├── favicon.ico / favicon.svg / icon-*.png / og-image.png
+│   ├── manifest.json / robots.txt / sitemap.xml
+├── next.config.js             ← output: 'export', trailingSlash: true
+├── tsconfig.json
+├── package.json               ← Next.js 14.2.5 + React 18 + TypeScript
+├── netlify.toml               ← build: npm run build, publish: out
+├── index.html                 ← File gốc (giữ lại để tham khảo)
+└── heroes-data.js             ← File gốc (giữ lại để tham khảo)
 ```
 
 ---
@@ -187,16 +200,17 @@ random-tuong-lien-quan/
 
 ## 🚀 CÁC TÍNH NĂNG NÊN THÊM SAU (V2)
 
-| Tính năng | Độ ưu tiên | Thời gian |
-|---|---|---|
-| Lưu lịch sử random (localStorage) | Cao | 2 giờ |
-| Nút "Random lại" (loại trừ tướng vừa ra) | Cao | 1 giờ |
-| Filter theo Độ khó (1-3 sao) | Trung bình | 1 giờ |
-| Dark/Light mode toggle | Thấp | 1 giờ |
-| Chia sẻ kết quả lên Facebook | Trung bình | 2 giờ |
-| Trang chi tiết tướng (SEO) | Cao | 1 ngày |
-| Tìm kiếm tướng theo tên | Trung bình | 1 giờ |
-| So sánh 2 tướng | Thấp | 3 giờ |
+| Tính năng | Độ ưu tiên | Thời gian | Trạng thái |
+|---|---|---|---|
+| Lưu lịch sử random (localStorage) | Cao | 2 giờ | ✅ Hoàn thành |
+| Nút "Random lại" (loại trừ tướng vừa ra) | Cao | 1 giờ | ✅ Hoàn thành |
+| Filter theo Độ khó (1-3 sao) | Trung bình | 1 giờ | ✅ Hoàn thành |
+| Dark/Light mode toggle | Thấp | 1 giờ | ✅ Hoàn thành |
+| Chia sẻ kết quả lên Facebook | Trung bình | 2 giờ | ✅ Hoàn thành |
+| Trang chi tiết tướng (SEO) 126+ trang SSG | Cao | 1 ngày | ✅ Hoàn thành |
+| Tìm kiếm tướng theo tên | Trung bình | 1 giờ | ✅ Hoàn thành |
+| **Migrate sang Next.js 14 + TypeScript** | Cao | - | ✅ Hoàn thành |
+| So sánh 2 tướng | Thấp | 3 giờ | Chưa làm |
 
 ---
 
