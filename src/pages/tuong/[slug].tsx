@@ -28,22 +28,26 @@ function tierClass(tier: string): string {
 
 export default function HeroPage({ hero }: Props) {
   const roleVi = ROLE_LABELS[hero.role] || hero.role;
+  const officialRoles = hero.officialRoleLabels?.length ? hero.officialRoleLabels : [roleVi];
   const diffText = difficultyText(hero.difficulty);
   const heroSlug = slugify(hero.name);
   const canonicalUrl = `https://randomtuong.netlify.app/tuong/${heroSlug}/`;
 
-  const title = `${hero.name} - Tướng Liên Quân | ${roleVi} · Tier ${hero.tier} · ${hero.winrate}% WR`;
-  const description = `${hero.name} là tướng ${roleVi} trong Liên Quân Mobile. Tier ${hero.tier}, winrate ${hero.winrate}%, độ khó ${diffText}. Random tướng ngay!`;
+  const title = `${hero.name} - Tướng Liên Quân | ${officialRoles.join(', ')}`;
+  const description = `${hero.name} là tướng ${officialRoles.join(
+    ', '
+  )} trong Liên Quân Mobile. Xem ảnh, vai trò chính thức và bộ kỹ năng crawl từ Garena.`;
 
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Thing',
     name: hero.name,
-    description: description,
+    description,
+    image: hero.imageUrl,
     url: canonicalUrl,
+    sameAs: hero.sourceUrl,
   };
 
-  // Same-tier heroes (excluding current)
   const sameTierHeroes = HEROES.filter(
     h => h.tier === hero.tier && h.name !== hero.name
   ).sort((a, b) => b.winrate - a.winrate);
@@ -68,8 +72,8 @@ export default function HeroPage({ hero }: Props) {
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:locale" content="vi_VN" />
-        <meta property="og:image" content="https://randomtuong.netlify.app/og-image.png" />
-        <meta name="twitter:card" content="summary" />
+        <meta property="og:image" content={hero.imageUrl || 'https://randomtuong.netlify.app/og-image.png'} />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <script
@@ -80,7 +84,7 @@ export default function HeroPage({ hero }: Props) {
 
       <header className="site-header">
         <h1 style={{ fontSize: 'clamp(18px, 4vw, 26px)' }}>RandomTuong.vn</h1>
-        <p>Random tướng Liên Quân Mobile miễn phí</p>
+        <p>Dữ liệu tướng Liên Quân Mobile crawl từ Garena</p>
       </header>
 
       <div className="hero-detail">
@@ -88,9 +92,14 @@ export default function HeroPage({ hero }: Props) {
           ← Về trang chủ
         </Link>
 
-        {/* Hero card */}
         <div className="hero-detail-card">
-          <div className="hero-detail-avatar">{hero.emoji}</div>
+          <div className="hero-detail-portrait">
+            {hero.imageUrl ? (
+              <img src={hero.imageUrl} alt={`Ảnh tướng ${hero.name}`} loading="eager" />
+            ) : (
+              <span>{hero.emoji}</span>
+            )}
+          </div>
           <h1 className="hero-detail-name">{hero.name}</h1>
           <div className="chips" style={{ justifyContent: 'center', marginBottom: '8px' }}>
             <span
@@ -99,73 +108,61 @@ export default function HeroPage({ hero }: Props) {
             >
               Tier {hero.tier}
             </span>
-            <span className="chip">{roleVi}</span>
-            {hero.secondaryRole && hero.secondaryRole !== hero.role && (
-              <span className="chip">{hero.secondaryRole}</span>
-            )}
+            {officialRoles.map(role => (
+              <span className="chip" key={role}>
+                {role}
+              </span>
+            ))}
           </div>
 
-          {/* Winrate bar */}
-          <div className="winrate-bar">
-            <div className="winrate-bar-label">
-              <span>Winrate</span>
-              <span style={{ color: 'var(--gold)', fontWeight: 800 }}>
-                {hero.winrate.toFixed(1)}%
-              </span>
-            </div>
-            <div className="winrate-bar-track">
-              <div
-                className="winrate-bar-fill"
-                style={{ width: `${Math.min(hero.winrate, 100)}%` }}
-              />
-            </div>
-          </div>
+          <p className="source-note" style={{ margin: '10px auto 0', maxWidth: '560px' }}>
+            Ảnh, vai trò chính thức và kỹ năng được lấy từ Garena. Tier, lane, độ khó và winrate là
+            metadata tham khảo để app random/ban-pick hoạt động.
+          </p>
         </div>
 
-        {/* Info grid */}
         <div className="panel" style={{ marginBottom: '16px' }}>
           <div className="hero-info-grid">
             <div className="hero-info-item">
-              <span className="label">Vai trò chính</span>
+              <span className="label">Vai trò chính thức</span>
+              <span className="value">{officialRoles.join(', ')}</span>
+            </div>
+            <div className="hero-info-item">
+              <span className="label">Vai trò app</span>
               <span className="value">{roleVi}</span>
             </div>
             <div className="hero-info-item">
               <span className="label">Vai trò phụ</span>
               <span className="value">
-                {ROLE_LABELS[hero.secondaryRole] || hero.secondaryRole || '—'}
+                {ROLE_LABELS[hero.secondaryRole] || hero.secondaryRole || 'Chưa gán'}
               </span>
             </div>
             <div className="hero-info-item">
-              <span className="label">Lane</span>
+              <span className="label">Lane gợi ý</span>
               <span className="value">{hero.lane}</span>
             </div>
             <div className="hero-info-item">
-              <span className="label">Độ khó</span>
+              <span className="label">Độ khó app</span>
               <span className="value" style={{ letterSpacing: '2px' }}>
                 {diffText}
               </span>
             </div>
             <div className="hero-info-item">
-              <span className="label">Winrate</span>
-              <span className="value" style={{ color: 'var(--teal)' }}>
-                {hero.winrate.toFixed(1)}%
-              </span>
-            </div>
-            <div className="hero-info-item">
               <span className="label">Tier meta</span>
               <span className="value" style={{ color: tierColorMap[hero.tier] }}>
-                Tier {hero.tier}
+                Tier {hero.tier} · {hero.winrate.toFixed(1)}% WR
               </span>
             </div>
           </div>
 
-          {/* CTA */}
+          <div className="official-source">
+            <a href={hero.sourceUrl} target="_blank" rel="noopener noreferrer">
+              Mở trang nguồn Garena
+            </a>
+          </div>
+
           <div style={{ marginTop: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <Link
-              href={`/?role=${hero.role}`}
-              className="btn btn-primary"
-              style={{ flex: '1 1 200px' }}
-            >
+            <Link href={`/?role=${hero.role}`} className="btn btn-primary" style={{ flex: '1 1 200px' }}>
               🎲 Random tướng {roleVi} ngay
             </Link>
             <Link href="/" className="btn btn-plain" style={{ flex: '1 1 140px' }}>
@@ -174,27 +171,29 @@ export default function HeroPage({ hero }: Props) {
           </div>
         </div>
 
-        {/* Same tier */}
+        {hero.skills.length > 0 && (
+          <div className="panel" style={{ marginBottom: '16px' }}>
+            <div className="detail-section-title">Bộ kỹ năng từ Garena</div>
+            <div className="hero-skills">
+              {hero.skills.map((skill, index) => (
+                <article className="hero-skill-card" key={`${skill.name}-${index}`}>
+                  <div className="skill-index">{index === 0 ? 'Nội tại' : `Chiêu ${index}`}</div>
+                  <h2>{skill.name}</h2>
+                  <p>{skill.description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
+
         {sameTierHeroes.length > 0 && (
           <div className="panel" style={{ marginBottom: '16px' }}>
-            <div
-              style={{
-                color: tierColorMap[hero.tier],
-                fontWeight: 900,
-                fontSize: '13px',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-              }}
-            >
+            <div className="detail-section-title" style={{ color: tierColorMap[hero.tier] }}>
               Tướng cùng Tier {hero.tier} ({sameTierHeroes.length})
             </div>
             <div className="same-tier-grid">
               {sameTierHeroes.slice(0, 20).map(h => (
-                <Link
-                  key={h.name}
-                  href={`/tuong/${slugify(h.name)}/`}
-                  className="same-tier-card"
-                >
+                <Link key={h.name} href={`/tuong/${slugify(h.name)}/`} className="same-tier-card">
                   <strong>
                     {h.emoji} {h.name}
                   </strong>
@@ -218,8 +217,7 @@ export default function HeroPage({ hero }: Props) {
         <br />
         <span>Không thuộc về Garena, VNG hay Tencent.</span>
         <br />
-        <Link href="/privacy-policy/">Privacy Policy</Link> ·{' '}
-        <a href="/sitemap.xml">Sitemap</a>
+        <Link href="/privacy-policy/">Privacy Policy</Link> · <a href="/sitemap.xml">Sitemap</a>
         <br />
         <span>© 2026 RandomTuong.vn</span>
       </footer>
