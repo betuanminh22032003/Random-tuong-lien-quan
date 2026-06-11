@@ -340,51 +340,84 @@ export default function Home({ themeToggle }: PageProps) {
   return (
     <>
       <Head>
-        <title>Random Tướng Liên Quân 2026 | RandomTuong.vn</title>
+        <title>Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
           name="description"
-          content="Random tướng Liên Quân Mobile miễn phí: lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta tướng mạnh mùa S2 2026."
+          content="Random tướng Liên Quân Mobile miễn phí — lọc theo vai trò, độ khó, random đội 5v5, ban/pick thông minh và bảng meta tướng mạnh mùa S2 2026. Không cần đăng ký, dùng ngay!"
         />
         <meta
           name="keywords"
-          content="random tướng liên quân, random tướng liên quân mobile, random đội liên quân, meta liên quân 2026, tướng mạnh liên quân"
+          content="random tướng liên quân, random tướng liên quân mobile, random tướng, công cụ random tướng liên quân, random đội liên quân, random đội 5v5 liên quân, meta liên quân 2026, tướng mạnh liên quân, ban pick liên quân, liên quân mobile"
         />
-        <meta name="robots" content="index,follow" />
+        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
         <link rel="canonical" href="https://randomtuong.netlify.app/" />
+        <link rel="alternate" hrefLang="vi" href="https://randomtuong.netlify.app/" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="vi_VN" />
         <meta property="og:url" content="https://randomtuong.netlify.app/" />
-        <meta property="og:title" content="Random Tướng Liên Quân Mobile" />
+        <meta property="og:title" content="Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn" />
         <meta
           property="og:description"
-          content="Random tướng, chia đội 5v5, ban/pick và xem meta Liên Quân Mobile mùa S2 2026."
+          content="Random tướng Liên Quân Mobile miễn phí — lọc role, độ khó, random đội 5v5, ban/pick và xem meta tướng mạnh S2 2026."
         />
         <meta property="og:image" content="https://randomtuong.netlify.app/og-image.png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Random Tướng Liên Quân Mobile" />
+        <meta name="twitter:title" content="Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn" />
         <meta
           name="twitter:description"
-          content="Công cụ random tướng Liên Quân miễn phí, có lọc role, độ khó, 5v5 và meta."
+          content="Công cụ random tướng Liên Quân miễn phí — lọc role, độ khó, 5v5, ban/pick và bảng meta."
         />
         <meta name="twitter:image" content="https://randomtuong.netlify.app/og-image.png" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebApplication',
-              name: 'RandomTuong.vn',
-              url: 'https://randomtuong.netlify.app/',
-              applicationCategory: 'GameApplication',
-              operatingSystem: 'Any',
-              inLanguage: 'vi-VN',
-              description:
-                'Công cụ random tướng Liên Quân Mobile miễn phí, hỗ trợ lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta.',
-              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-            }),
+            __html: JSON.stringify([
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebApplication',
+                name: 'RandomTuong.vn – Random Tướng Liên Quân Mobile',
+                url: 'https://randomtuong.netlify.app/',
+                applicationCategory: 'GameApplication',
+                operatingSystem: 'Any',
+                inLanguage: 'vi-VN',
+                description: 'Công cụ random tướng Liên Quân Mobile miễn phí, hỗ trợ lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta tướng mạnh mùa S2 2026.',
+                offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'FAQPage',
+                mainEntity: [
+                  {
+                    '@type': 'Question',
+                    name: 'Random tướng Liên Quân Mobile ở đâu?',
+                    acceptedAnswer: { '@type': 'Answer', text: 'Bạn có thể random tướng Liên Quân Mobile miễn phí tại RandomTuong.vn — chọn tab Random, lọc theo vai trò hoặc độ khó rồi bấm nút Random để quay.' },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: 'Cách random đội 5v5 Liên Quân Mobile?',
+                    acceptedAnswer: { '@type': 'Answer', text: 'Vào tab 5v5 trên RandomTuong.vn, chọn số người rồi bấm Chia đội. Hệ thống tự động chia 10 tướng thành 2 đội 5v5 ngẫu nhiên.' },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: 'Tướng nào mạnh nhất Liên Quân mùa S2 2026?',
+                    acceptedAnswer: { '@type': 'Answer', text: 'Xem bảng meta tướng mạnh tại tab Meta trên RandomTuong.vn — phân loại tier S/A/B/C theo winrate và sức mạnh thực tế mùa S2 2026.' },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: 'RandomTuong.vn có miễn phí không?',
+                    acceptedAnswer: { '@type': 'Answer', text: 'Hoàn toàn miễn phí, không cần đăng ký. Truy cập và dùng ngay trên mọi thiết bị.' },
+                  },
+                ],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'BreadcrumbList',
+                itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: 'https://randomtuong.netlify.app/' }],
+              },
+            ]),
           }}
         />
       </Head>
@@ -394,8 +427,8 @@ export default function Home({ themeToggle }: PageProps) {
       </div>
 
       <header className="site-header">
-        <h1>Random Tướng Liên Quân</h1>
-        <p>Random tướng, chia đội 5v5, ban/pick và meta mùa S2 2026</p>
+        <h1>Random Tướng Liên Quân Mobile</h1>
+        <p>Công cụ random tướng miễn phí — 5v5, ban/pick &amp; meta tướng mạnh mùa S2 2026</p>
         {setTheme && (
           <button
             className="theme-toggle"
@@ -767,13 +800,21 @@ export default function Home({ themeToggle }: PageProps) {
                           href={`/tuong/${slugify(hero.name)}/`}
                           className="tier-hero"
                         >
-                          <strong>
-                            {hero.emoji} {hero.name}
-                          </strong>
-                          <span>
-                            {ROLE_LABELS[hero.role] || hero.role} · {hero.winrate.toFixed(1)}%
-                            WR · {difficultyText(hero.difficulty)}
-                          </span>
+                          <img
+                            src={hero.imageUrl}
+                            alt={hero.name}
+                            className="tier-hero-img"
+                            loading="lazy"
+                            width={40}
+                            height={40}
+                          />
+                          <div className="tier-hero-info">
+                            <strong>{hero.emoji} {hero.name}</strong>
+                            <span>
+                              {ROLE_LABELS[hero.role] || hero.role} · {hero.winrate.toFixed(1)}%
+                              WR · {difficultyText(hero.difficulty)}
+                            </span>
+                          </div>
                         </Link>
                       ))}
                     </div>

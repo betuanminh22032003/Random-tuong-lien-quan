@@ -689,19 +689,20 @@ button {
 
 .tier-heroes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
   gap: 8px;
   padding: 10px;
 }
 
 .tier-hero {
-  min-height: 58px;
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 8px;
   background: rgba(255,255,255,0.045);
-  padding: 8px;
+  padding: 6px 8px;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   transition: background 0.16s;
 }
 
@@ -709,10 +710,27 @@ button {
   background: rgba(255,255,255,0.09);
 }
 
+.tier-hero-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+}
+
+.tier-hero-info {
+  min-width: 0;
+  flex: 1;
+}
+
 .tier-hero strong {
   display: block;
   color: var(--text);
   font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tier-hero span {
