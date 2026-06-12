@@ -347,6 +347,7 @@ export default function Home({ themeToggle }: PageProps) {
           name="description"
           content="Random tướng Liên Quân Mobile miễn phí — lọc theo vai trò, độ khó, random đội 5v5, ban/pick thông minh và bảng meta tướng mạnh mùa S2 2026. Không cần đăng ký, dùng ngay!"
         />
+        <meta name="google-site-verification" content="kWD3nX8fSKSWn05DreTITreHE4ByeiVPZQuL8DtZscM" />
         <meta
           name="keywords"
           content="random tướng liên quân, random tướng liên quân mobile, random tướng, công cụ random tướng liên quân, random đội liên quân, random đội 5v5 liên quân, meta liên quân 2026, tướng mạnh liên quân, ban pick liên quân, liên quân mobile"
