@@ -85,7 +85,7 @@ export default function TenTrang({}: Props) {
         <title>Tiêu đề | RandomTuong.vn</title>
         <meta name="description" content="Mô tả ngắn dưới 160 ký tự" />
         <meta name="robots" content="index,follow" />
-        <link rel="canonical" href="https://randomtuong.netlify.app/ten-trang/" />
+        <link rel="canonical" href="https://random-tuong-lien-quan.netlify.app/ten-trang/" />
       </Head>
       <main className="shell">
         {/* content */}

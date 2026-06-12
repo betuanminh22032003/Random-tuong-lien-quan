@@ -6,7 +6,7 @@
 
 - **Stack:** Next.js 14 (Pages Router) + TypeScript + Static Export (`output: 'export'`)
 - **Deploy:** Netlify (tự động từ GitHub push)
-- **Domain:** randomtuong.netlify.app → sau là randomtuong.vn
+- **Domain:** random-tuong-lien-quan.netlify.app → sau là randomtuong.vn
 - **Ngôn ngữ UI:** Tiếng Việt hoàn toàn
 
 ## Architecture

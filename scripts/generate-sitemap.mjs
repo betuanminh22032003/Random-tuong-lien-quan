@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 const DATA_FILE = 'src/data/heroes.ts';
 const SITEMAP_FILE = 'public/sitemap.xml';
 const ROBOTS_FILE = 'public/robots.txt';
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://randomtuong.netlify.app').replace(/\/+$/, '');
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://random-tuong-lien-quan.netlify.app').replace(/\/+$/, '');
 
 function slugify(name) {
   return name
