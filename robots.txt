@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://randomtuong.netlify.app/sitemap.xml
+Sitemap: random-tuong-lien-quan.netlify.app/sitemap.xml
