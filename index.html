@@ -1130,7 +1130,7 @@ function renderMeta() {
         <div class="tier-heroes">
           ${heroes.map(hero => `
             <div class="tier-hero">
-              <strong>${escapeHTML(hero.emoji)} ${escapeHTML(hero.name)}</strong>
+              <strong>${escapeHTML(hero.name)}</strong>
               <span>${escapeHTML(roleText(hero))} · ${hero.winrate.toFixed(1)}% WR · ${difficultyText(hero.difficulty)}</span>
             </div>
           `).join("")}

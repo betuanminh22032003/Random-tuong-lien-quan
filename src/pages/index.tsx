@@ -825,7 +825,7 @@ export default function Home({ themeToggle }: PageProps) {
                             height={40}
                           />
                           <div className="tier-hero-info">
-                            <strong>{hero.emoji} {hero.name}</strong>
+                            <strong>{hero.name}</strong>
                             <span>
                               {ROLE_LABELS[hero.role] || hero.role} · {hero.winrate.toFixed(1)}%
                               WR · {difficultyText(hero.difficulty)}

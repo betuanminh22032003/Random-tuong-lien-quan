@@ -235,8 +235,16 @@ export default function HeroPage({ hero }: Props) {
             <div className="same-tier-grid">
               {sameTierHeroes.slice(0, 20).map(h => (
                 <Link key={h.name} href={`/tuong/${slugify(h.name)}/`} className="same-tier-card">
+                  <img
+                            src={h.imageUrl}
+                            alt={h.name}
+                            className="tier-hero-img"
+                            loading="lazy"
+                            width={40}
+                            height={40}
+                          />
                   <strong>
-                    {h.emoji} {h.name}
+                    {h.name}
                   </strong>
                   <span>
                     {ROLE_LABELS[h.role] || h.role} · {h.winrate.toFixed(1)}% WR
