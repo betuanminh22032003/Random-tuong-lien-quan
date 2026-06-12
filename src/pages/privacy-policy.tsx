@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import Link from 'next/link';
+import { absoluteUrl } from '@/lib/seo';
 
 export default function PrivacyPolicy() {
   return (
@@ -9,7 +10,7 @@ export default function PrivacyPolicy() {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="Chính sách quyền riêng tư của RandomTuong.vn." />
         <meta name="robots" content="index,follow" />
-        <link rel="canonical" href="https://randomtuong.netlify.app/privacy-policy/" />
+        <link rel="canonical" href={absoluteUrl('/privacy-policy/')} />
       </Head>
 
       <header className="site-header">
