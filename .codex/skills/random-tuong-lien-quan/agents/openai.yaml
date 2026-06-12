@@ -1,0 +1,4 @@
+interface:
+  display_name: "Random Tuong Project"
+  short_description: "Work safely on RandomTuong.vn"
+  default_prompt: "Use $random-tuong-lien-quan to update the RandomTuong.vn project."
