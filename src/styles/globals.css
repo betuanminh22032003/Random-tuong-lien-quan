@@ -762,6 +762,104 @@ button {
   text-decoration: none;
 }
 
+.seo-content {
+  width: min(1080px, 100%);
+  margin: 0 auto;
+  padding: 8px 16px 28px;
+}
+
+.seo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+  gap: 14px;
+}
+
+.seo-copy,
+.faq-list {
+  background: rgba(23, 26, 34, 0.72);
+  border: 1px solid rgba(60, 66, 84, 0.72);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+[data-theme="light"] .seo-copy,
+[data-theme="light"] .faq-list {
+  background: rgba(255, 255, 255, 0.84);
+}
+
+.seo-copy .eyebrow {
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.seo-copy h2,
+.faq-list h2 {
+  color: var(--gold);
+  font-size: 18px;
+  line-height: 1.25;
+  margin: 0 0 10px;
+}
+
+.seo-copy p,
+.faq-list p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin: 0 0 10px;
+}
+
+.seo-links,
+.featured-heroes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.seo-links a,
+.featured-heroes a {
+  border: 1px solid rgba(55, 214, 199, 0.3);
+  border-radius: 999px;
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+
+.seo-links a:hover,
+.featured-heroes a:hover {
+  background: rgba(55, 214, 199, 0.08);
+}
+
+.faq-list {
+  margin-top: 14px;
+}
+
+.faq-list details {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 0;
+}
+
+.faq-list details:first-of-type {
+  border-top: 0;
+}
+
+.faq-list summary {
+  color: var(--text);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.faq-list p {
+  margin: 8px 0 0;
+}
+
 footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
@@ -1029,8 +1127,35 @@ footer a {
   text-decoration: none;
 }
 
+.keyword-page .privacy-panel {
+  display: grid;
+  gap: 16px;
+}
+
+.keyword-actions {
+  margin: 0 0 4px;
+}
+
+.keyword-page h2 {
+  margin-top: 0;
+}
+
+.keyword-faq {
+  background: transparent;
+  border: 0;
+  margin-top: 0;
+  padding: 0;
+}
+
+.keyword-related {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 4px;
+  padding-top: 14px;
+}
+
 @media (max-width: 800px) {
   .layout.two { grid-template-columns: 1fr; }
+  .seo-grid { grid-template-columns: 1fr; }
   .shell { padding: 12px; }
   .site-header h1 { font-size: 22px; }
   .section-title { align-items: flex-start; flex-direction: column; }

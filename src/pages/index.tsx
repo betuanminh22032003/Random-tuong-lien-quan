@@ -17,9 +17,6 @@ const APP_CONFIG = {
   adsenseClient: '',
 };
 
-const SITE_URL = 'https://randomtuong.netlify.app';
-const SITE_NAME = 'RandomTuong.vn';
-
 const SEO_FAQS = [
   {
     question: 'Random tướng Liên Quân Mobile ở đâu?',
@@ -317,6 +314,10 @@ export default function Home({ themeToggle }: PageProps) {
   const avgWinrate = filteredHeroes.length
     ? (filteredHeroes.reduce((sum, h) => sum + h.winrate, 0) / filteredHeroes.length).toFixed(1)
     : '0.0';
+  const featuredHeroes = ACTIVE_HEROES
+    .filter(hero => hero.tier === 'S')
+    .sort((a, b) => b.winrate - a.winrate)
+    .slice(0, 12);
 
   const tierLabels: Record<string, string> = {
     S: '🔥 S - Ưu tiên ban/pick',
@@ -420,28 +421,11 @@ export default function Home({ themeToggle }: PageProps) {
               {
                 '@context': 'https://schema.org',
                 '@type': 'FAQPage',
-                mainEntity: [
-                  {
-                    '@type': 'Question',
-                    name: 'Random tướng Liên Quân Mobile ở đâu?',
-                    acceptedAnswer: { '@type': 'Answer', text: 'Bạn có thể random tướng Liên Quân Mobile miễn phí tại RandomTuong.vn — chọn tab Random, lọc theo vai trò hoặc độ khó rồi bấm nút Random để quay.' },
-                  },
-                  {
-                    '@type': 'Question',
-                    name: 'Cách random đội 5v5 Liên Quân Mobile?',
-                    acceptedAnswer: { '@type': 'Answer', text: 'Vào tab 5v5 trên RandomTuong.vn, chọn số người rồi bấm Chia đội. Hệ thống tự động chia 10 tướng thành 2 đội 5v5 ngẫu nhiên.' },
-                  },
-                  {
-                    '@type': 'Question',
-                    name: 'Tướng nào mạnh nhất Liên Quân mùa S2 2026?',
-                    acceptedAnswer: { '@type': 'Answer', text: 'Xem bảng meta tướng mạnh tại tab Meta trên RandomTuong.vn — phân loại tier S/A/B/C theo winrate và sức mạnh thực tế mùa S2 2026.' },
-                  },
-                  {
-                    '@type': 'Question',
-                    name: 'RandomTuong.vn có miễn phí không?',
-                    acceptedAnswer: { '@type': 'Answer', text: 'Hoàn toàn miễn phí, không cần đăng ký. Truy cập và dùng ngay trên mọi thiết bị.' },
-                  },
-                ],
+                mainEntity: SEO_FAQS.map(item => ({
+                  '@type': 'Question',
+                  name: item.question,
+                  acceptedAnswer: { '@type': 'Answer', text: item.answer },
+                })),
               },
               {
                 '@context': 'https://schema.org',
@@ -886,6 +870,55 @@ export default function Home({ themeToggle }: PageProps) {
           </div>
         </section>
       </main>
+
+      <section className="seo-content" aria-label="Hướng dẫn random tướng Liên Quân">
+        <div className="seo-grid">
+          <article className="seo-copy">
+            <p className="eyebrow">Random tướng Liên Quân Mobile</p>
+            <h2>Công cụ random tướng, chia đội 5v5 và ban/pick miễn phí</h2>
+            <p>
+              RandomTuong.vn tập trung vào một việc rất cụ thể: giúp game thủ Liên Quân
+              chọn tướng nhanh khi chơi vui, leo rank cùng bạn bè hoặc cần bốc đội hình
+              ngẫu nhiên. Bạn có thể lọc theo vai trò, độ khó, lane gợi ý rồi random lại
+              cho tới khi tìm được tướng phù hợp.
+            </p>
+            <p>
+              Dữ liệu tên tướng, ảnh, vai trò chính thức và kỹ năng được lấy từ nguồn
+              Garena. Các nhãn tier, lane, độ khó và winrate trong app là dữ liệu tham
+              khảo để công cụ random, chia đội và ban/pick hoạt động mượt hơn, không phải
+              thống kê chính thức của nhà phát hành.
+            </p>
+            <div className="seo-links" aria-label="Liên kết SEO chính">
+              <Link href="/random-tuong-lien-quan/">Random tướng Liên Quân</Link>
+              <Link href="/random-doi-lien-quan/">Random đội 5v5</Link>
+              <Link href="/ban-pick-lien-quan/">Ban/Pick Liên Quân</Link>
+              <Link href="/#meta-table">Bảng meta tướng</Link>
+            </div>
+          </article>
+
+          <aside className="seo-copy">
+            <p className="eyebrow">Tướng đang nổi bật</p>
+            <h2>Trang chi tiết tướng dễ tra cứu</h2>
+            <div className="featured-heroes">
+              {featuredHeroes.map(hero => (
+                <Link key={hero.name} href={`/tuong/${slugify(hero.name)}/`}>
+                  {hero.name}
+                </Link>
+              ))}
+            </div>
+          </aside>
+        </div>
+
+        <div className="faq-list">
+          <h2>Câu hỏi thường gặp</h2>
+          {SEO_FAQS.map(item => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <footer>
         <strong style={{ color: 'var(--gold)' }}>RandomTuong.vn</strong> - Công cụ random tướng
