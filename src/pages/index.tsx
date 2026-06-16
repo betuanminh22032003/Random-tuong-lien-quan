@@ -16,6 +16,32 @@ const APP_CONFIG = {
   adsenseClient: '',
 };
 
+const SITE_URL = 'https://randomtuong.netlify.app';
+const SITE_NAME = 'RandomTuong.vn';
+
+const SEO_FAQS = [
+  {
+    question: 'Random tướng Liên Quân Mobile ở đâu?',
+    answer:
+      'Bạn có thể random tướng Liên Quân Mobile miễn phí tại RandomTuong.vn. Chọn tab Random, lọc theo vai trò hoặc độ khó rồi bấm Random để quay tướng.',
+  },
+  {
+    question: 'Cách random đội 5v5 Liên Quân Mobile như thế nào?',
+    answer:
+      'Vào tab 5v5 và bấm Random đội 5v5. Công cụ tự chia hai đội theo các lane cơ bản gồm đường trên, đi rừng, đường giữa, xạ thủ và trợ thủ.',
+  },
+  {
+    question: 'Bảng meta tướng mạnh trên RandomTuong.vn có phải số liệu chính thức không?',
+    answer:
+      'Không. Danh sách tướng, vai trò, ảnh và kỹ năng lấy từ nguồn Garena; tier, lane, độ khó và winrate là metadata tham khảo của app để phục vụ random và ban/pick.',
+  },
+  {
+    question: 'RandomTuong.vn có miễn phí không?',
+    answer:
+      'Có. Công cụ random tướng, random đội 5v5, ban/pick và xem chi tiết tướng đều miễn phí, không cần đăng ký tài khoản.',
+  },
+];
+
 const ROLE_OPTIONS = [
   { key: 'all', label: '🎯 Tất cả' },
   { key: 'Warrior', label: '⚔️ Đấu sĩ' },
