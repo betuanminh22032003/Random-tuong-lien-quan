@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Random Tướng Liên Quân 2026 | RandomTuong.vn</title>
 <meta name="description" content="Random tướng Liên Quân Mobile miễn phí: lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta tướng mạnh mùa S2 2026.">
+<meta name="google-site-verification" content="kWD3nX8fSKSWn05DreTITreHE4ByeiVPZQuL8DtZscM">
 <meta name="keywords" content="random tướng liên quân, random tướng liên quân mobile, random đội liên quân, meta liên quân 2026, tướng mạnh liên quân">
 <meta name="robots" content="index,follow">
-<link rel="canonical" href="https://randomtuong.netlify.app/">
+<link rel="canonical" href="https://random-tuong-lien-quan.netlify.app/">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/icon-192.png">
@@ -16,23 +17,23 @@
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="vi_VN">
-<meta property="og:url" content="https://randomtuong.netlify.app/">
+<meta property="og:url" content="https://random-tuong-lien-quan.netlify.app/">
 <meta property="og:title" content="Random Tướng Liên Quân Mobile">
 <meta property="og:description" content="Random tướng, chia đội 5v5, ban/pick và xem meta Liên Quân Mobile mùa S2 2026.">
-<meta property="og:image" content="https://randomtuong.netlify.app/og-image.png">
+<meta property="og:image" content="https://random-tuong-lien-quan.netlify.app/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Random Tướng Liên Quân Mobile">
 <meta name="twitter:description" content="Công cụ random tướng Liên Quân miễn phí, có lọc role, độ khó, 5v5 và meta.">
-<meta name="twitter:image" content="https://randomtuong.netlify.app/og-image.png">
+<meta name="twitter:image" content="https://random-tuong-lien-quan.netlify.app/og-image.png">
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "RandomTuong.vn",
-  "url": "https://randomtuong.netlify.app/",
+  "url": "https://random-tuong-lien-quan.netlify.app/",
   "applicationCategory": "GameApplication",
   "operatingSystem": "Any",
   "inLanguage": "vi-VN",
@@ -1129,7 +1130,7 @@ function renderMeta() {
         <div class="tier-heroes">
           ${heroes.map(hero => `
             <div class="tier-hero">
-              <strong>${escapeHTML(hero.emoji)} ${escapeHTML(hero.name)}</strong>
+              <strong>${escapeHTML(hero.name)}</strong>
               <span>${escapeHTML(roleText(hero))} · ${hero.winrate.toFixed(1)}% WR · ${difficultyText(hero.difficulty)}</span>
             </div>
           `).join("")}

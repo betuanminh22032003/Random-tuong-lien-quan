@@ -83,7 +83,7 @@ const HEROES = [
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://randomtuong.netlify.app/</loc>
+    <loc>https://random-tuong-lien-quan.netlify.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -94,7 +94,7 @@ const HEROES = [
 ```
 User-agent: *
 Allow: /
-Sitemap: https://randomtuong.netlify.app/sitemap.xml
+Sitemap: https://random-tuong-lien-quan.netlify.app/sitemap.xml
 ```
 
 #### Google Analytics 4 (GA4) — miễn phí:

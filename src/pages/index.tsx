@@ -10,6 +10,7 @@ import {
   HERO_SOURCES,
   slugify,
 } from '@/data/heroes';
+import { absoluteUrl, DEFAULT_OG_IMAGE, heroUrl, SITE_NAME } from '@/lib/seo';
 
 const APP_CONFIG = {
   gaMeasurementId: '',
@@ -242,7 +243,7 @@ export default function Home({ themeToggle }: PageProps) {
     if (!currentHero) return;
     const slug = slugify(currentHero.name);
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-      `https://randomtuong.netlify.app/tuong/${slug}/`
+      heroUrl(slug)
     )}&quote=${encodeURIComponent(`Tôi vừa random được ${currentHero.name}!`)}`;
     window.open(url, 'fb-share', 'width=580,height=400');
   }, [currentHero]);
@@ -372,22 +373,25 @@ export default function Home({ themeToggle }: PageProps) {
           name="description"
           content="Random tướng Liên Quân Mobile miễn phí — lọc theo vai trò, độ khó, random đội 5v5, ban/pick thông minh và bảng meta tướng mạnh mùa S2 2026. Không cần đăng ký, dùng ngay!"
         />
+        <meta name="google-site-verification" content="kWD3nX8fSKSWn05DreTITreHE4ByeiVPZQuL8DtZscM" />
         <meta
           name="keywords"
           content="random tướng liên quân, random tướng liên quân mobile, random tướng, công cụ random tướng liên quân, random đội liên quân, random đội 5v5 liên quân, meta liên quân 2026, tướng mạnh liên quân, ban pick liên quân, liên quân mobile"
         />
         <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
-        <link rel="canonical" href="https://randomtuong.netlify.app/" />
-        <link rel="alternate" hrefLang="vi" href="https://randomtuong.netlify.app/" />
+        <link rel="canonical" href={absoluteUrl('/')} />
+        <link rel="alternate" hrefLang="vi" href={absoluteUrl('/')} />
+        <link rel="alternate" hrefLang="x-default" href={absoluteUrl('/')} />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="vi_VN" />
-        <meta property="og:url" content="https://randomtuong.netlify.app/" />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:url" content={absoluteUrl('/')} />
         <meta property="og:title" content="Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn" />
         <meta
           property="og:description"
           content="Random tướng Liên Quân Mobile miễn phí — lọc role, độ khó, random đội 5v5, ban/pick và xem meta tướng mạnh S2 2026."
         />
-        <meta property="og:image" content="https://randomtuong.netlify.app/og-image.png" />
+        <meta property="og:image" content={DEFAULT_OG_IMAGE} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -396,7 +400,7 @@ export default function Home({ themeToggle }: PageProps) {
           name="twitter:description"
           content="Công cụ random tướng Liên Quân miễn phí — lọc role, độ khó, 5v5, ban/pick và bảng meta."
         />
-        <meta name="twitter:image" content="https://randomtuong.netlify.app/og-image.png" />
+        <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -405,11 +409,12 @@ export default function Home({ themeToggle }: PageProps) {
                 '@context': 'https://schema.org',
                 '@type': 'WebApplication',
                 name: 'RandomTuong.vn – Random Tướng Liên Quân Mobile',
-                url: 'https://randomtuong.netlify.app/',
+                url: absoluteUrl('/'),
                 applicationCategory: 'GameApplication',
                 operatingSystem: 'Any',
                 inLanguage: 'vi-VN',
                 description: 'Công cụ random tướng Liên Quân Mobile miễn phí, hỗ trợ lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta tướng mạnh mùa S2 2026.',
+                image: DEFAULT_OG_IMAGE,
                 offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
               },
               {
@@ -441,7 +446,18 @@ export default function Home({ themeToggle }: PageProps) {
               {
                 '@context': 'https://schema.org',
                 '@type': 'BreadcrumbList',
-                itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: 'https://randomtuong.netlify.app/' }],
+                itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: absoluteUrl('/') }],
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'ItemList',
+                name: 'Danh sách tướng Liên Quân Mobile',
+                itemListElement: HEROES.map((hero, index) => ({
+                  '@type': 'ListItem',
+                  position: index + 1,
+                  name: hero.name,
+                  url: heroUrl(slugify(hero.name)),
+                })),
               },
             ]),
           }}
@@ -835,7 +851,7 @@ export default function Home({ themeToggle }: PageProps) {
                             height={40}
                           />
                           <div className="tier-hero-info">
-                            <strong>{hero.emoji} {hero.name}</strong>
+                            <strong>{hero.name}</strong>
                             <span>
                               {ROLE_LABELS[hero.role] || hero.role} · {hero.winrate.toFixed(1)}%
                               WR · {difficultyText(hero.difficulty)}

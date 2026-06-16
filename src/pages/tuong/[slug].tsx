@@ -2,6 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { HEROES, Hero, slugify, ROLE_LABELS } from '@/data/heroes';
+import { absoluteUrl, DEFAULT_OG_IMAGE, heroUrl, SITE_NAME } from '@/lib/seo';
 
 interface Props {
   hero: Hero;
@@ -31,22 +32,58 @@ export default function HeroPage({ hero }: Props) {
   const officialRoles = hero.officialRoleLabels?.length ? hero.officialRoleLabels : [roleVi];
   const diffText = difficultyText(hero.difficulty);
   const heroSlug = slugify(hero.name);
-  const canonicalUrl = `https://randomtuong.netlify.app/tuong/${heroSlug}/`;
+  const canonicalUrl = heroUrl(heroSlug);
 
-  const title = `${hero.name} - Tướng Liên Quân | ${officialRoles.join(', ')}`;
+  const title = `${hero.name} Liên Quân - Kỹ năng, vai trò, random | RandomTuong.vn`;
   const description = `${hero.name} là tướng ${officialRoles.join(
     ', '
-  )} trong Liên Quân Mobile. Xem ảnh, vai trò chính thức và bộ kỹ năng crawl từ Garena.`;
+  )} trong Liên Quân Mobile. Xem ảnh, vai trò chính thức, bộ kỹ năng từ Garena và random ${hero.name} theo đội hình.`;
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Thing',
-    name: hero.name,
-    description,
-    image: hero.imageUrl,
-    url: canonicalUrl,
-    sameAs: hero.sourceUrl,
-  };
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Thing',
+      name: hero.name,
+      description,
+      image: hero.imageUrl || DEFAULT_OG_IMAGE,
+      url: canonicalUrl,
+      sameAs: hero.sourceUrl,
+      isPartOf: {
+        '@type': 'VideoGame',
+        name: 'Liên Quân Mobile',
+      },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: absoluteUrl('/') },
+        { '@type': 'ListItem', position: 2, name: hero.name, item: canonicalUrl },
+      ],
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: `${hero.name} là tướng vai trò gì trong Liên Quân?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `${hero.name} có vai trò chính thức là ${officialRoles.join(', ')} theo dữ liệu Garena được RandomTuong.vn crawl lại.`,
+          },
+        },
+        {
+          '@type': 'Question',
+          name: `Có thể random ${hero.name} không?`,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: `Có. Bạn có thể dùng RandomTuong.vn để random ${hero.name}, random đội 5v5 hoặc ban/pick cùng các tướng Liên Quân khác.`,
+          },
+        },
+      ],
+    },
+  ];
 
   const sameTierHeroes = HEROES.filter(
     h => h.tier === hero.tier && h.name !== hero.name
@@ -65,17 +102,21 @@ export default function HeroPage({ hero }: Props) {
         <title>{title}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={description} />
-        <meta name="robots" content="index,follow" />
+        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
         <link rel="canonical" href={canonicalUrl} />
+        <link rel="alternate" hrefLang="vi" href={canonicalUrl} />
+        <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={canonicalUrl} />
         <meta property="og:locale" content="vi_VN" />
-        <meta property="og:image" content={hero.imageUrl || 'https://randomtuong.netlify.app/og-image.png'} />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:image" content={hero.imageUrl || DEFAULT_OG_IMAGE} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={hero.imageUrl || DEFAULT_OG_IMAGE} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -194,8 +235,16 @@ export default function HeroPage({ hero }: Props) {
             <div className="same-tier-grid">
               {sameTierHeroes.slice(0, 20).map(h => (
                 <Link key={h.name} href={`/tuong/${slugify(h.name)}/`} className="same-tier-card">
+                  <img
+                            src={h.imageUrl}
+                            alt={h.name}
+                            className="tier-hero-img"
+                            loading="lazy"
+                            width={40}
+                            height={40}
+                          />
                   <strong>
-                    {h.emoji} {h.name}
+                    {h.name}
                   </strong>
                   <span>
                     {ROLE_LABELS[h.role] || h.role} · {h.winrate.toFixed(1)}% WR
