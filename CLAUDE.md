@@ -14,17 +14,30 @@
 ```
 src/
 ├── data/heroes.ts          ← Nguồn sự thật duy nhất: 127 tướng + interfaces
+├── data/site.ts            ← Nav, MINI_GAMES, ROLE_PAGES, TEAM_LANES, TIER_LABELS
+├── lib/random.ts           ← RNG có seed (link chia sẻ tái tạo đúng kết quả), shuffle, share
+├── lib/theme.ts            ← ThemeContext (dark/light)
+├── components/
+│   ├── Seo.tsx             ← Head chung: title/description/canonical/OG + JSON-LD (breadcrumb, FAQ)
+│   ├── SiteLayout.tsx      ← Top bar, breadcrumb, footer liên kết nội bộ
+│   ├── GamePage.tsx        ← Khung chung cho mini game (SEO, HowTo, FAQ, game khác)
+│   └── KeywordPage.tsx     ← Landing page SEO theo keyword
 ├── pages/
-│   ├── _app.tsx            ← Theme dark/light (localStorage)
-│   ├── _document.tsx       ← HTML shell
-│   ├── index.tsx           ← Trang chính: Random / 5v5 / Ban-Pick / Meta tabs
-│   ├── privacy-policy.tsx  ← Trang bắt buộc cho AdSense
-│   └── tuong/[slug].tsx    ← 127 trang SSG tướng (SEO)
+│   ├── _app.tsx            ← ThemeContext provider (localStorage)
+│   ├── _document.tsx       ← HTML shell + script set theme trước khi paint
+│   ├── index.tsx           ← Trang chính: Random / 5v5 / Ban-Pick / Meta tabs (?tab=, ?role=)
+│   ├── mini-game/          ← Hub + doan-tuong, chia-team, thu-thach-random, dau-bai-tuong
+│   ├── tuong/index.tsx     ← Danh sách tướng (lọc/tìm, ?q=)
+│   ├── tuong/[slug].tsx    ← 127 trang SSG tướng (SEO)
+│   ├── vai-tro/[role].tsx  ← 6 trang tướng theo vai trò
+│   ├── tier-list-lien-quan.tsx
+│   └── privacy-policy.tsx  ← Trang bắt buộc cho AdSense
 └── styles/globals.css      ← CSS thuần, CSS vars cho dark/light theme
 
 public/                     ← Static assets (favicon, og-image, manifest, robots, sitemap)
 scripts/
-└── crawl-garena-heroes.mjs ← Crawler cập nhật heroes.ts từ Garena
+├── crawl-garena-heroes.mjs ← Crawler cập nhật heroes.ts từ Garena
+└── generate-sitemap.mjs    ← postbuild: quét out/**/index.html → sitemap.xml (+ image sitemap) & robots.txt
 next.config.js              ← output: 'export', trailingSlash: true, images.unoptimized: true
 netlify.toml                ← build: npm run build, publish: out
 ```
@@ -54,7 +67,7 @@ interface Hero {
 
 ```bash
 npm run dev       # Dev server localhost:3000
-npm run build     # SSG build → out/
+npm run build     # SSG build → out/ (postbuild tự sinh sitemap.xml + robots.txt)
 npm run export    # Alias cho build
 ```
 
@@ -133,6 +146,9 @@ const APP_CONFIG = {
 
 ### Thêm tướng mới
 Chạy crawler hoặc thêm thủ công vào `HEROES` array trong `src/data/heroes.ts`. Giữ đúng interface `Hero`.
+
+### Thêm mini game / trang mới
+Tạo file trong `src/pages/` (mini game: dùng `GamePage`, thêm vào `MINI_GAMES`). Sitemap tự cập nhật sau build — không cần sửa danh sách route.
 
 ### Thêm tab mới
 1. Thêm key vào `TabKey` type

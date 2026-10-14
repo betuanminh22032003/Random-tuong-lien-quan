@@ -1,57 +1,114 @@
+// Runs after `next build` (npm "postbuild"): scans the exported HTML in out/
+// so every page that ships is in the sitemap automatically — no route list to
+// keep in sync. Pages with a noindex robots meta are skipped.
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import { execSync } from 'node:child_process';
 
+const OUT_DIR = 'out';
 const DATA_FILE = 'src/data/heroes.ts';
-const SITEMAP_FILE = 'public/sitemap.xml';
-const ROOT_SITEMAP_FILE = 'sitemap.xml';
-const ROBOTS_FILE = 'public/robots.txt';
-const ROOT_ROBOTS_FILE = 'robots.txt';
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'https://randomtuong.netlify.app').replace(/\/+$/, '');
+// Repo copies keep the committed sitemap/robots in step with the deployed ones.
+const MIRRORS = ['public', '.'];
 
-const STATIC_ROUTES = [
-  { path: '/', changefreq: 'weekly', priority: '1.0' },
-  { path: '/privacy-policy/', changefreq: 'monthly', priority: '0.3' },
-  { path: '/random-tuong-lien-quan/', changefreq: 'weekly', priority: '0.9' },
-  { path: '/random-doi-lien-quan/', changefreq: 'weekly', priority: '0.8' },
-  { path: '/ban-pick-lien-quan/', changefreq: 'weekly', priority: '0.8' },
+const RULES = [
+  { test: p => p === '/', changefreq: 'daily', priority: '1.0' },
+  { test: p => p === '/mini-game/', changefreq: 'weekly', priority: '0.9' },
+  { test: p => p.startsWith('/mini-game/'), changefreq: 'weekly', priority: '0.9' },
+  { test: p => p === '/tier-list-lien-quan/', changefreq: 'weekly', priority: '0.9' },
+  { test: p => /^\/(random-tuong|random-doi|ban-pick)-lien-quan\/$/.test(p), changefreq: 'weekly', priority: '0.9' },
+  { test: p => p === '/tuong/', changefreq: 'weekly', priority: '0.8' },
+  { test: p => p.startsWith('/vai-tro/'), changefreq: 'weekly', priority: '0.8' },
+  { test: p => p.startsWith('/tuong/'), changefreq: 'monthly', priority: '0.7' },
+  { test: () => true, changefreq: 'yearly', priority: '0.3' },
 ];
 
-function slugify(name) {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/[’']/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+function escapeXml(value) {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-function urlEntry(path, changefreq, priority, lastmod) {
-  return `  <url>
-    <loc>${SITE_URL}${path}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>${changefreq}</changefreq>
-    <priority>${priority}</priority>
-  </url>`;
+function decodeHtml(value) {
+  return value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 }
 
+function meta(html, pattern) {
+  const match = html.match(pattern);
+  return match ? decodeHtml(match[1]) : '';
+}
+
+async function findHtml(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  const files = await Promise.all(
+    entries.map(entry => {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) return entry.name.startsWith('_') ? [] : findHtml(full);
+      return entry.name === 'index.html' ? [full] : [];
+    })
+  );
+  return files.flat();
+}
+
+function gitDate() {
+  try {
+    return execSync('git log -1 --format=%cs', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+  } catch {
+    return '';
+  }
+}
+
+const today = new Date().toISOString().slice(0, 10);
 const source = await fs.readFile(DATA_FILE, 'utf8');
-const crawledDate = source.match(/Last crawled:\s*(\d{4}-\d{2}-\d{2})/)?.[1];
-const HERO_LASTMOD = process.env.SITEMAP_HERO_LASTMOD || crawledDate || new Date().toISOString().slice(0, 10);
-const STATIC_LASTMOD = process.env.SITEMAP_STATIC_LASTMOD || new Date().toISOString().slice(0, 10);
-const heroNames = [...source.matchAll(/\{\s*name:\s*"([^"]+)",\s*role:\s*"/g)].map(match => match[1]);
+const heroLastmod = process.env.SITEMAP_HERO_LASTMOD || source.match(/Last crawled:\s*(\d{4}-\d{2}-\d{2})/)?.[1] || today;
+const siteLastmod = process.env.SITEMAP_STATIC_LASTMOD || gitDate() || today;
 
-if (!heroNames.length) {
-  throw new Error(`No heroes found in ${DATA_FILE}`);
+try {
+  await fs.access(OUT_DIR);
+} catch {
+  throw new Error(`${OUT_DIR}/ not found — run "npm run build" (sitemap is generated after next build).`);
 }
 
-const entries = [
-  ...STATIC_ROUTES.map(route => urlEntry(route.path, route.changefreq, route.priority, STATIC_LASTMOD)),
-  ...heroNames.map(name => urlEntry(`/tuong/${slugify(name)}/`, 'monthly', '0.7', HERO_LASTMOD)),
-];
+const pages = [];
+for (const file of await findHtml(OUT_DIR)) {
+  const html = await fs.readFile(file, 'utf8');
+  const robots = meta(html, /<meta name="robots" content="([^"]*)"/);
+  if (/noindex/i.test(robots)) continue;
+  const canonical = meta(html, /<link rel="canonical" href="([^"]+)"/);
+  const fallbackPath = '/' + path.relative(OUT_DIR, path.dirname(file)).split(path.sep).filter(Boolean).join('/');
+  const urlPath = canonical.startsWith(SITE_URL)
+    ? canonical.slice(SITE_URL.length) || '/'
+    : fallbackPath.endsWith('/') ? fallbackPath : `${fallbackPath}/`;
+  const image = meta(html, /<meta property="og:image" content="([^"]+)"/);
+  const title = meta(html, /<title>([^<]*)<\/title>/);
+  pages.push({ urlPath, image, title });
+}
+
+if (!pages.length) throw new Error(`No indexable pages found in ${OUT_DIR}/`);
+
+const unique = [...new Map(pages.map(p => [p.urlPath, p])).values()];
+const order = p => RULES.findIndex(rule => rule.test(p.urlPath));
+unique.sort((a, b) => order(a) - order(b) || a.urlPath.localeCompare(b.urlPath));
+
+const entries = unique.map(({ urlPath, image, title }) => {
+  const rule = RULES.find(r => r.test(urlPath));
+  const isHero = /^\/tuong\/[^/]+\/$/.test(urlPath);
+  const imageXml =
+    isHero && image && !image.startsWith(SITE_URL)
+      ? `
+    <image:image>
+      <image:loc>${escapeXml(image)}</image:loc>
+      <image:title>${escapeXml(title.split(' - ')[0].replace(/ Liên Quân$/, ''))}</image:title>
+    </image:image>`
+      : '';
+  return `  <url>
+    <loc>${escapeXml(SITE_URL + urlPath)}</loc>
+    <lastmod>${isHero ? heroLastmod : siteLastmod}</lastmod>
+    <changefreq>${rule.changefreq}</changefreq>
+    <priority>${rule.priority}</priority>${imageXml}
+  </url>`;
+});
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${entries.join('\n')}
 </urlset>
 `;
@@ -62,9 +119,9 @@ Allow: /
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
 
-await fs.writeFile(SITEMAP_FILE, sitemap, 'utf8');
-await fs.writeFile(ROOT_SITEMAP_FILE, sitemap, 'utf8');
-await fs.writeFile(ROBOTS_FILE, robots, 'utf8');
-await fs.writeFile(ROOT_ROBOTS_FILE, robots, 'utf8');
+for (const dir of [OUT_DIR, ...MIRRORS]) {
+  await fs.writeFile(path.join(dir, 'sitemap.xml'), sitemap, 'utf8');
+  await fs.writeFile(path.join(dir, 'robots.txt'), robots, 'utf8');
+}
 
-console.log(`Generated ${SITEMAP_FILE} with ${entries.length} URLs`);
+console.log(`Sitemap: ${entries.length} URLs → ${OUT_DIR}/sitemap.xml (+ ${MIRRORS.join(', ')})`);

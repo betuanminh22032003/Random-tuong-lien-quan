@@ -1,6 +1,8 @@
-import Head from 'next/head';
 import Link from 'next/link';
 import { absoluteUrl, DEFAULT_OG_IMAGE, SITE_NAME } from '@/lib/seo';
+import { MINI_GAMES } from '@/data/site';
+import Seo from './Seo';
+import SiteLayout from './SiteLayout';
 
 export interface KeywordFaq {
   question: string;
@@ -19,6 +21,8 @@ export interface KeywordPageProps {
   }>;
   faqs: KeywordFaq[];
   primaryCta: string;
+  ctaHref?: string;
+  keywords?: string;
 }
 
 export default function KeywordPage({
@@ -30,14 +34,16 @@ export default function KeywordPage({
   sections,
   faqs,
   primaryCta,
+  ctaHref = '/',
+  keywords,
 }: KeywordPageProps) {
-  const canonicalUrl = absoluteUrl(`/${slug}/`);
+  const canonicalPath = `/${slug}/`;
   const jsonLd = [
     {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       name: title,
-      url: canonicalUrl,
+      url: absoluteUrl(canonicalPath),
       description,
       inLanguage: 'vi-VN',
       image: DEFAULT_OG_IMAGE,
@@ -47,65 +53,36 @@ export default function KeywordPage({
         url: absoluteUrl('/'),
       },
     },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: faqs.map(item => ({
-        '@type': 'Question',
-        name: item.question,
-        acceptedAnswer: { '@type': 'Answer', text: item.answer },
-      })),
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: absoluteUrl('/') },
-        { '@type': 'ListItem', position: 2, name: h1, item: canonicalUrl },
-      ],
-    },
   ];
+  const breadcrumbs = [{ name: h1, path: canonicalPath }];
 
   return (
     <>
-      <Head>
-        <title>{title}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content={description} />
-        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
-        <link rel="canonical" href={canonicalUrl} />
-        <link rel="alternate" hrefLang="vi" href={canonicalUrl} />
-        <link rel="alternate" hrefLang="x-default" href={canonicalUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="vi_VN" />
-        <meta property="og:site_name" content={SITE_NAME} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:image" content={DEFAULT_OG_IMAGE} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      </Head>
+      <Seo
+        title={title}
+        description={description}
+        path={canonicalPath}
+        keywords={keywords}
+        breadcrumbs={breadcrumbs}
+        faqs={faqs}
+        jsonLd={jsonLd}
+      />
 
-      <header className="site-header">
+      <SiteLayout breadcrumbs={breadcrumbs}>
+      <section className="hero-banner">
         <h1>{h1}</h1>
         <p>{lead}</p>
-      </header>
+      </section>
+
 
       <main className="privacy-container keyword-page">
         <section className="privacy-panel">
           <div className="actions keyword-actions">
-            <Link href="/" className="btn btn-primary">
+            <Link href={ctaHref} className="btn btn-primary">
               {primaryCta}
             </Link>
-            <Link href="/#meta-table" className="btn btn-plain">
-              Xem bảng meta
+            <Link href="/mini-game/" className="btn btn-plain">
+              🎮 Mini game chơi với bạn
             </Link>
           </div>
 
@@ -133,18 +110,18 @@ export default function KeywordPage({
             {' · '}
             <Link href="/ban-pick-lien-quan/">Ban/Pick Liên Quân</Link>
             {' · '}
-            <Link href="/">Trang chủ RandomTuong.vn</Link>
+            <Link href="/tier-list-lien-quan/">Tier list Liên Quân</Link>
+            {MINI_GAMES.map(game => (
+              <span key={game.slug}>
+                {' · '}
+                <Link href={`/mini-game/${game.slug}/`}>{game.name}</Link>
+              </span>
+            ))}
           </p>
         </section>
       </main>
 
-      <footer>
-        <strong style={{ color: 'var(--gold)' }}>RandomTuong.vn</strong>
-        <br />
-        <Link href="/">Trang chủ</Link> · <a href="/sitemap.xml">Sitemap</a>
-        <br />
-        <span>© 2026 RandomTuong.vn</span>
-      </footer>
+      </SiteLayout>
     </>
   );
 }

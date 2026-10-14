@@ -8,6 +8,7 @@ export default function RandomDoiLienQuanPage() {
       description="Random đội Liên Quân 5v5 miễn phí, tự chia hai đội theo lane cơ bản: top, rừng, mid, xạ thủ và trợ thủ."
       h1="Random Đội Liên Quân 5v5"
       lead="Tạo hai đội hình ngẫu nhiên theo 5 lane cơ bản."
+      ctaHref="/?tab=team"
       primaryCta="Random đội 5v5"
       sections={[
         {

@@ -1,22 +1,22 @@
-import Head from 'next/head';
 import Link from 'next/link';
-import { absoluteUrl } from '@/lib/seo';
+import Seo from '@/components/Seo';
+import SiteLayout from '@/components/SiteLayout';
 
 export default function PrivacyPolicy() {
   return (
     <>
-      <Head>
-        <title>Privacy Policy | RandomTuong.vn</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Chính sách quyền riêng tư của RandomTuong.vn." />
-        <meta name="robots" content="index,follow" />
-        <link rel="canonical" href={absoluteUrl('/privacy-policy/')} />
-      </Head>
+      <Seo
+        title="Privacy Policy | RandomTuong.vn"
+        description="Chính sách quyền riêng tư của RandomTuong.vn: dữ liệu lưu trên trình duyệt, analytics và quảng cáo."
+        path="/privacy-policy/"
+      />
 
-      <header className="site-header">
-        <h1 style={{ fontSize: '28px', textTransform: 'none' }}>Privacy Policy</h1>
-        <p>RandomTuong.vn · Cập nhật 03/06/2026</p>
-      </header>
+      <SiteLayout breadcrumbs={[{ name: 'Privacy Policy', path: '/privacy-policy/' }]}>
+      <section className="hero-banner">
+        <h1>Privacy Policy</h1>
+        <p>RandomTuong.vn · Cập nhật 14/10/2026</p>
+      </section>
+
 
       <div className="privacy-container">
         <div className="privacy-panel">
@@ -75,13 +75,7 @@ export default function PrivacyPolicy() {
         </div>
       </div>
 
-      <footer>
-        <strong style={{ color: 'var(--gold)' }}>RandomTuong.vn</strong>
-        <br />
-        <Link href="/">Trang chủ</Link> · <a href="/sitemap.xml">Sitemap</a>
-        <br />
-        <span>© 2026 RandomTuong.vn</span>
-      </footer>
+      </SiteLayout>
     </>
   );
 }

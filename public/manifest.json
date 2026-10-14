@@ -1,12 +1,12 @@
 {
   "name": "RandomTuong.vn",
   "short_name": "RandomTuong",
-  "description": "Random tướng Liên Quân Mobile, chia đội 5v5, ban/pick và xem meta.",
+  "description": "Random tướng Liên Quân Mobile, chia đội 5v5, ban/pick, tier list và mini game chơi cùng bạn bè.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#101116",
-  "theme_color": "#11131a",
+  "background_color": "#0b0d14",
+  "theme_color": "#0d0f16",
   "lang": "vi-VN",
   "icons": [
     {
@@ -20,6 +20,28 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "games",
+    "entertainment"
+  ],
+  "shortcuts": [
+    {
+      "name": "Random tướng",
+      "url": "/"
+    },
+    {
+      "name": "Đoán tướng",
+      "url": "/mini-game/doan-tuong/"
+    },
+    {
+      "name": "Chia team với bạn bè",
+      "url": "/mini-game/chia-team/"
+    },
+    {
+      "name": "Vòng quay thử thách",
+      "url": "/mini-game/thu-thach-random/"
     }
   ]
 }

@@ -8,6 +8,7 @@ export default function BanPickLienQuanPage() {
       description="Công cụ ban pick Liên Quân Mobile ngẫu nhiên, mô phỏng lượt cấm/chọn hai đội và tránh trùng tướng đã dùng."
       h1="Ban Pick Liên Quân Mobile"
       lead="Mô phỏng lượt cấm/chọn ngẫu nhiên cho hai đội."
+      ctaHref="/?tab=banpick"
       primaryCta="Dùng ban/pick ngay"
       sections={[
         {

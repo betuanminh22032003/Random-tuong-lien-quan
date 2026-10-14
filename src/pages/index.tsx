@@ -1,5 +1,5 @@
-import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   HEROES,
@@ -10,7 +10,11 @@ import {
   HERO_SOURCES,
   slugify,
 } from '@/data/heroes';
-import { absoluteUrl, DEFAULT_OG_IMAGE, heroUrl, SITE_NAME } from '@/lib/seo';
+import { absoluteUrl, DEFAULT_OG_IMAGE, heroUrl } from '@/lib/seo';
+import { pickRandom, normalize } from '@/lib/random';
+import { MINI_GAMES, ROLE_PAGES, TEAM_LANES, TIER_LABELS } from '@/data/site';
+import Seo from '@/components/Seo';
+import SiteLayout from '@/components/SiteLayout';
 
 const APP_CONFIG = {
   gaMeasurementId: '',
@@ -32,6 +36,11 @@ const SEO_FAQS = [
     question: 'Bảng meta tướng mạnh trên RandomTuong.vn có phải số liệu chính thức không?',
     answer:
       'Không. Danh sách tướng, vai trò, ảnh và kỹ năng lấy từ nguồn Garena; tier, lane, độ khó và winrate là metadata tham khảo của app để phục vụ random và ban/pick.',
+  },
+  {
+    question: 'Có mini game Liên Quân nào chơi cùng bạn bè không?',
+    answer:
+      'Có. RandomTuong.vn có Đoán tướng qua kỹ năng/ảnh mờ, Chia team với bạn bè, Vòng quay thử thách và Đấu bài tướng. Bạn có thể gửi link để cả nhóm chơi cùng một bộ câu hỏi hoặc cùng một kết quả chia đội.',
   },
   {
     question: 'RandomTuong.vn có miễn phí không?',
@@ -58,13 +67,6 @@ const DIFFICULTY_OPTIONS = [
   { key: '3', label: '★★★ Khó' },
 ];
 
-const TEAM_LANES = [
-  { key: 'Top', label: 'Đường trên', match: (h: Hero) => h.lane === 'Top' || h.role === 'Warrior' || h.role === 'Tank' },
-  { key: 'Jungle', label: 'Đi rừng', match: (h: Hero) => h.lane === 'Jungle' || h.secondaryRole === 'Jungle' || h.role === 'Assassin' },
-  { key: 'Mid', label: 'Đường giữa', match: (h: Hero) => h.lane === 'Mid' || h.role === 'Mage' },
-  { key: 'AD', label: 'Xạ thủ', match: (h: Hero) => h.lane === 'AD' || h.role === 'Marksman' },
-  { key: 'Support', label: 'Trợ thủ', match: (h: Hero) => h.lane === 'Support' || h.role === 'Support' || h.role === 'Tank' },
-];
 
 // Standard Liên Quân ban/pick sequence (3 bans each → 5 picks each)
 const BP_SEQUENCE: Array<{ type: 'ban' | 'pick'; side: 'blue' | 'red' }> = [
@@ -102,23 +104,12 @@ interface TeamMember extends Hero {
 
 type TabKey = 'random' | 'team' | 'banpick' | 'meta';
 
-function normalize(value: string): string {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase();
-}
-
 function difficultyText(level: number): string {
   return '★'.repeat(level) + '☆'.repeat(3 - level);
 }
 
 function tierClass(tier: string): string {
   return String(tier || 'B').toLowerCase();
-}
-
-function pickRandom<T>(pool: T[]): T {
-  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 function loadHistory(): Hero[] {
@@ -131,16 +122,16 @@ function loadHistory(): Hero[] {
   }
 }
 
-interface ThemeToggleProps {
-  theme: 'dark' | 'light';
-  setTheme: (t: 'dark' | 'light') => void;
-}
+const TAB_KEYS: TabKey[] = ['random', 'team', 'banpick', 'meta'];
+const TAB_LABELS: Record<TabKey, string> = {
+  random: '🎲 Random',
+  team: '👥 5v5',
+  banpick: '🛡️ Ban/Pick',
+  meta: '📊 Meta',
+};
 
-interface PageProps {
-  themeToggle?: ThemeToggleProps;
-}
-
-export default function Home({ themeToggle }: PageProps) {
+export default function Home() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabKey>('random');
   const [selectedRole, setSelectedRole] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
@@ -160,6 +151,25 @@ export default function Home({ themeToggle }: PageProps) {
   useEffect(() => {
     setHistory(loadHistory());
   }, []);
+
+  // Deep links: /?tab=team, /?role=Assassin (used by hero/role pages and keyword pages)
+  useEffect(() => {
+    if (!router.isReady) return;
+    const { tab, role } = router.query;
+    if (typeof tab === 'string' && (TAB_KEYS as string[]).includes(tab)) setActiveTab(tab as TabKey);
+    if (typeof role === 'string' && ROLE_OPTIONS.some(opt => opt.key === role)) setSelectedRole(role);
+  }, [router.isReady, router.query]);
+
+  const switchTab = useCallback(
+    (tab: TabKey) => {
+      setActiveTab(tab);
+      router.replace({ pathname: '/', query: tab === 'random' ? {} : { tab } }, undefined, {
+        shallow: true,
+        scroll: false,
+      });
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (APP_CONFIG.gaMeasurementId) {
@@ -319,15 +329,7 @@ export default function Home({ themeToggle }: PageProps) {
     .sort((a, b) => b.winrate - a.winrate)
     .slice(0, 12);
 
-  const tierLabels: Record<string, string> = {
-    S: '🔥 S - Ưu tiên ban/pick',
-    A: '⭐ A - Mạnh để leo rank',
-    B: '✅ B - Ổn định',
-    C: '⬇️ C - Tình huống',
-  };
-
-  const theme = themeToggle?.theme ?? 'dark';
-  const setTheme = themeToggle?.setTheme;
+  const tierLabels = TIER_LABELS;
 
   // Render a ban slot (compact image square)
   const renderBanSlot = (hero: Hero | undefined, idx: number) => (
@@ -367,121 +369,77 @@ export default function Home({ themeToggle }: PageProps) {
 
   return (
     <>
-      <Head>
-        <title>Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-          name="description"
-          content="Random tướng Liên Quân Mobile miễn phí — lọc theo vai trò, độ khó, random đội 5v5, ban/pick thông minh và bảng meta tướng mạnh mùa S2 2026. Không cần đăng ký, dùng ngay!"
-        />
-        <meta name="google-site-verification" content="kWD3nX8fSKSWn05DreTITreHE4ByeiVPZQuL8DtZscM" />
-        <meta
-          name="keywords"
-          content="random tướng liên quân, random tướng liên quân mobile, random tướng, công cụ random tướng liên quân, random đội liên quân, random đội 5v5 liên quân, meta liên quân 2026, tướng mạnh liên quân, ban pick liên quân, liên quân mobile"
-        />
-        <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large" />
-        <link rel="canonical" href={absoluteUrl('/')} />
-        <link rel="alternate" hrefLang="vi" href={absoluteUrl('/')} />
-        <link rel="alternate" hrefLang="x-default" href={absoluteUrl('/')} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="vi_VN" />
-        <meta property="og:site_name" content={SITE_NAME} />
-        <meta property="og:url" content={absoluteUrl('/')} />
-        <meta property="og:title" content="Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn" />
-        <meta
-          property="og:description"
-          content="Random tướng Liên Quân Mobile miễn phí — lọc role, độ khó, random đội 5v5, ban/pick và xem meta tướng mạnh S2 2026."
-        />
-        <meta property="og:image" content={DEFAULT_OG_IMAGE} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Random Tướng Liên Quân Mobile - Miễn Phí | RandomTuong.vn" />
-        <meta
-          name="twitter:description"
-          content="Công cụ random tướng Liên Quân miễn phí — lọc role, độ khó, 5v5, ban/pick và bảng meta."
-        />
-        <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
-              {
-                '@context': 'https://schema.org',
-                '@type': 'WebApplication',
-                name: 'RandomTuong.vn – Random Tướng Liên Quân Mobile',
-                url: absoluteUrl('/'),
-                applicationCategory: 'GameApplication',
-                operatingSystem: 'Any',
-                inLanguage: 'vi-VN',
-                description: 'Công cụ random tướng Liên Quân Mobile miễn phí, hỗ trợ lọc theo vai trò, độ khó, random đội 5v5, ban/pick và bảng meta tướng mạnh mùa S2 2026.',
-                image: DEFAULT_OG_IMAGE,
-                offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
-              },
-              {
-                '@context': 'https://schema.org',
-                '@type': 'FAQPage',
-                mainEntity: SEO_FAQS.map(item => ({
-                  '@type': 'Question',
-                  name: item.question,
-                  acceptedAnswer: { '@type': 'Answer', text: item.answer },
-                })),
-              },
-              {
-                '@context': 'https://schema.org',
-                '@type': 'BreadcrumbList',
-                itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Random Tướng Liên Quân', item: absoluteUrl('/') }],
-              },
-              {
-                '@context': 'https://schema.org',
-                '@type': 'ItemList',
-                name: 'Danh sách tướng Liên Quân Mobile',
-                itemListElement: HEROES.map((hero, index) => ({
-                  '@type': 'ListItem',
-                  position: index + 1,
-                  name: hero.name,
-                  url: heroUrl(slugify(hero.name)),
-                })),
-              },
-            ]),
-          }}
-        />
-      </Head>
+      <Seo
+        title="Random Tướng Liên Quân Mobile - Miễn Phí, 5v5, Ban/Pick & Mini Game | RandomTuong.vn"
+        description="Random tướng Liên Quân Mobile miễn phí: lọc vai trò, độ khó, random đội 5v5, ban/pick, tier list và mini game đoán tướng, chia team chơi cùng bạn bè. Không cần đăng ký!"
+        path="/"
+        keywords="random tướng liên quân, random tướng liên quân mobile, random tướng, vòng quay tướng liên quân, random đội liên quân, chia team liên quân, đoán tướng liên quân, mini game liên quân, tier list liên quân, ban pick liên quân"
+        faqs={SEO_FAQS}
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'RandomTuong.vn',
+            alternateName: ['Random Tướng Liên Quân', 'RandomTuong'],
+            url: absoluteUrl('/'),
+            inLanguage: 'vi-VN',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: `${absoluteUrl('/tuong/')}?q={search_term_string}`,
+              'query-input': 'required name=search_term_string',
+            },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            name: 'RandomTuong.vn – Random Tướng Liên Quân Mobile',
+            url: absoluteUrl('/'),
+            applicationCategory: 'GameApplication',
+            operatingSystem: 'Any',
+            inLanguage: 'vi-VN',
+            description:
+              'Công cụ random tướng Liên Quân Mobile miễn phí, hỗ trợ lọc theo vai trò, độ khó, random đội 5v5, ban/pick, tier list và mini game chơi cùng bạn bè.',
+            image: DEFAULT_OG_IMAGE,
+            offers: { '@type': 'Offer', price: '0', priceCurrency: 'VND' },
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: 'Danh sách tướng Liên Quân Mobile',
+            itemListElement: HEROES.map((hero, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              name: hero.name,
+              url: heroUrl(slugify(hero.name)),
+            })),
+          },
+        ]}
+      />
 
-      <div className="ad ad-top" data-ad-slot="top">
-        AdSense ready - Top banner 728x90
-      </div>
-
-      <header className="site-header">
+      <SiteLayout showTopAd>
+      <section className="hero-banner">
+        <p className="eyebrow">Mùa 2026 · {ACTIVE_HEROES.length} tướng · Dữ liệu Garena</p>
         <h1>Random Tướng Liên Quân Mobile</h1>
-        <p>Công cụ random tướng miễn phí — 5v5, ban/pick &amp; meta tướng mạnh mùa S2 2026</p>
-        {setTheme && (
-          <button
-            className="theme-toggle"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            aria-label="Chuyển giao diện sáng/tối"
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-        )}
-      </header>
+        <p>
+          Quay tướng, chia đội 5v5, ban/pick và{' '}
+          <Link href="/mini-game/">mini game chơi cùng bạn bè</Link> — miễn phí, không cần đăng ký.
+        </p>
+      </section>
 
-      <nav className="tabs" aria-label="Điều hướng công cụ">
-        {(['random', 'team', 'banpick', 'meta'] as TabKey[]).map((tab, i) => {
-          const labels = ['🎲 Random', '👥 5v5', '🛡️ Ban/Pick', '📊 Meta'];
-          return (
-            <button
-              key={tab}
-              className="tab"
-              type="button"
-              aria-selected={activeTab === tab}
-              onClick={() => setActiveTab(tab)}
-            >
-              {labels[i]}
-            </button>
-          );
-        })}
-      </nav>
+      <div className="tabs" role="tablist" aria-label="Công cụ random">
+        {TAB_KEYS.map(tab => (
+          <button
+            key={tab}
+            className="tab"
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab}
+            onClick={() => switchTab(tab)}
+          >
+            {TAB_LABELS[tab]}
+          </button>
+        ))}
+      </div>
 
       <main className="shell">
         {/* ── Random Tab ── */}
@@ -559,7 +517,7 @@ export default function Home({ themeToggle }: PageProps) {
               </div>
 
               {currentHero && !spinning && (
-                <div className="actions" style={{ marginTop: 0 }}>
+                <div className="actions" style={{ marginTop: 10 }}>
                   <Link
                     href={`/tuong/${slugify(currentHero.name)}/`}
                     className="btn btn-plain"
@@ -869,6 +827,25 @@ export default function Home({ themeToggle }: PageProps) {
             AdSense ready - Mobile banner 320x100
           </div>
         </section>
+
+        <section className="game-strip" aria-label="Mini game Liên Quân">
+          <div className="section-title">
+            <h2>🎮 Mini game chơi với bạn</h2>
+            <Link href="/mini-game/">Xem tất cả →</Link>
+          </div>
+          <div className="game-grid">
+            {MINI_GAMES.map(game => (
+              <Link key={game.slug} href={`/mini-game/${game.slug}/`} className="game-card">
+                <span className="game-emoji" aria-hidden="true">
+                  {game.emoji}
+                </span>
+                <strong>{game.name}</strong>
+                <span>{game.tagline}</span>
+                <em>{game.players}</em>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
 
       <section className="seo-content" aria-label="Hướng dẫn random tướng Liên Quân">
@@ -892,7 +869,14 @@ export default function Home({ themeToggle }: PageProps) {
               <Link href="/random-tuong-lien-quan/">Random tướng Liên Quân</Link>
               <Link href="/random-doi-lien-quan/">Random đội 5v5</Link>
               <Link href="/ban-pick-lien-quan/">Ban/Pick Liên Quân</Link>
-              <Link href="/#meta-table">Bảng meta tướng</Link>
+              <Link href="/tier-list-lien-quan/">Tier list Liên Quân</Link>
+              <Link href="/tuong/">Danh sách tướng</Link>
+              <Link href="/mini-game/">Mini game Liên Quân</Link>
+              {ROLE_PAGES.map(page => (
+                <Link key={page.slug} href={`/vai-tro/${page.slug}/`}>
+                  Tướng {page.label}
+                </Link>
+              ))}
             </div>
           </article>
 
@@ -920,19 +904,7 @@ export default function Home({ themeToggle }: PageProps) {
         </div>
       </section>
 
-      <footer>
-        <strong style={{ color: 'var(--gold)' }}>RandomTuong.vn</strong> - Công cụ random tướng
-        Liên Quân Mobile miễn phí
-        <br />
-        <span>
-          Không thuộc về Garena, VNG hay Tencent. Dữ liệu meta dùng để tham khảo khi ban/pick.
-        </span>
-        <br />
-        <Link href="/privacy-policy/">Privacy Policy</Link> ·{' '}
-        <a href="/sitemap.xml">Sitemap</a>
-        <br />
-        <span>© 2026 RandomTuong.vn</span>
-      </footer>
+      </SiteLayout>
     </>
   );
 }
