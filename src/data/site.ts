@@ -2,15 +2,16 @@ import type { Hero } from './heroes';
 
 export interface NavLink {
   href: string;
+  icon: string;
   label: string;
-  short: string;
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { href: '/', label: '🎲 Random', short: 'Random' },
-  { href: '/mini-game/', label: '🎮 Mini game', short: 'Mini game' },
-  { href: '/tuong/', label: '📚 Tướng', short: 'Tướng' },
-  { href: '/tier-list-lien-quan/', label: '📊 Tier list', short: 'Tier list' },
+  { href: '/', icon: '🎲', label: 'Random' },
+  { href: '/mini-game/', icon: '🎮', label: 'Mini game' },
+  { href: '/tuong/', icon: '📚', label: 'Tướng' },
+  { href: '/tier-list-lien-quan/', icon: '📊', label: 'Tier list' },
+  { href: '/huong-dan/', icon: '📖', label: 'Cẩm nang' },
 ];
 
 export interface MiniGame {
@@ -87,7 +88,7 @@ export const ROLE_PAGES: RolePage[] = [
     emoji: '🗡️',
     intro:
       'Sát thủ có khả năng cơ động và dồn sát thương cực mạnh, chuyên đi rừng để bắt lẻ xạ thủ và pháp sư đối phương.',
-    tips: 'Kiểm soát rừng, canh mắt và vào sau khi đối thủ dùng chiêu khống chế để hạ mục tiêu nhanh nhất.',
+    tips: 'Kiểm soát rừng, núp bụi chờ thời cơ và vào sau khi đối thủ dùng chiêu khống chế để hạ mục tiêu nhanh nhất.',
   },
   {
     role: 'Mage',
@@ -123,7 +124,7 @@ export const ROLE_PAGES: RolePage[] = [
     emoji: '💊',
     intro:
       'Trợ thủ hồi máu, tạo lá chắn hoặc khống chế để hỗ trợ đồng đội, thường đi cùng xạ thủ đường rồng và roam khắp bản đồ.',
-    tips: 'Cắm mắt, theo sát xạ thủ đầu trận rồi roam hỗ trợ đường giữa và rừng khi có cơ hội.',
+    tips: 'Dò bụi cỏ mở tầm nhìn, theo sát xạ thủ đầu trận rồi roam hỗ trợ đường giữa và rừng khi có cơ hội.',
   },
 ];
 

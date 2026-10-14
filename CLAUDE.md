@@ -30,6 +30,8 @@ src/
 │   ├── tuong/index.tsx     ← Danh sách tướng (lọc/tìm, ?q=)
 │   ├── tuong/[slug].tsx    ← 127 trang SSG tướng (SEO)
 │   ├── vai-tro/[role].tsx  ← 6 trang tướng theo vai trò
+│   ├── huong-dan/          ← Cẩm nang: hub + bài viết từ data/guides.ts
+│   ├── gioi-thieu.tsx, lien-he.tsx, dieu-khoan.tsx
 │   ├── tier-list-lien-quan.tsx
 │   └── privacy-policy.tsx  ← Trang bắt buộc cho AdSense
 └── styles/globals.css      ← CSS thuần, CSS vars cho dark/light theme
@@ -110,27 +112,28 @@ node scripts/crawl-garena-heroes.mjs
 
 Sau đó cần **manual review** tier/winrate/difficulty vì Garena không publish winrate public.
 
-## AdSense Placeholders
-
-Các div `.ad` trong code là placeholder chờ AdSense được duyệt:
-```html
-<div class="ad ad-top" data-ad-slot="top">AdSense ready - Top banner 728x90</div>
-```
-Khi AdSense được duyệt: thay bằng `<ins class="adsbygoogle" ...>` và điền `APP_CONFIG.adsenseClient`.
-
 ## Monetization Config
 
+Tất cả cấu hình nằm ở `src/lib/config.ts`:
 ```typescript
-// src/pages/index.tsx — top of file
-const APP_CONFIG = {
-  gaMeasurementId: '',   // GA4 ID: G-XXXXXXXXXX
-  adsenseClient: '',     // AdSense: ca-pub-XXXXXXXXXXXXXXXX
+export const APP_CONFIG = {
+  gaMeasurementId: '',          // GA4 ID: G-XXXXXXXXXX → gtag tự chèn trong _document
+  adsenseClient: '',            // ca-pub-XXXXXXXXXXXXXXXX → script AdSense + meta + out/ads.txt khi build
+  adSlots: { top: '', mid: '' },// mã đơn vị quảng cáo (số); trống = không render ô quảng cáo
+  contactEmail: '',             // hiển thị ở /lien-he/
+  feedbackUrl: '...',
 };
 ```
+`<AdSlot slot="top|mid" />` không render gì khi chưa có `adsenseClient` + slot ID (không còn ô placeholder).
+
+## Content
+
+- Cẩm nang: bài viết trong `src/data/guides.ts` (link nội tuyến dạng `[text](/path)`), render ở `/huong-dan/[slug]/`.
+- Trang thông tin bắt buộc cho AdSense: `/gioi-thieu/`, `/lien-he/`, `/dieu-khoan/`, `/privacy-policy/`.
 
 ## Deployment Flow
 
-1. Push lên GitHub `main` branch
+1. Push lên GitHub `master` branch (dự án cá nhân — push thẳng `master`)
 2. Netlify tự chạy `npm run build` → publish `out/`
 3. Không có CI/CD tests — build success = deploy success
 

@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { MINI_GAMES, NAV_LINKS, ROLE_PAGES } from '@/data/site';
 import { useTheme } from '@/lib/theme';
 import type { Crumb } from './Seo';
+import AdSlot from './AdSlot';
 
 interface SiteLayoutProps {
   children: ReactNode;
@@ -25,9 +26,7 @@ export default function SiteLayout({ children, breadcrumbs, showTopAd = false }:
   return (
     <>
       {showTopAd && (
-        <div className="ad ad-top" data-ad-slot="top">
-          AdSense ready - Top banner 728x90
-        </div>
+        <AdSlot slot="top" variant="top" />
       )}
 
       <header className="topbar">
@@ -50,7 +49,10 @@ export default function SiteLayout({ children, breadcrumbs, showTopAd = false }:
                 className={`topnav-link${isActive(pathname, link.href) ? ' active' : ''}`}
                 aria-current={isActive(pathname, link.href) ? 'page' : undefined}
               >
-                {link.label}
+                <span className="nav-icon" aria-hidden="true">
+                  {link.icon}
+                </span>
+                <span>{link.label}</span>
               </Link>
             ))}
           </nav>
@@ -100,6 +102,7 @@ export default function SiteLayout({ children, breadcrumbs, showTopAd = false }:
             <Link href="/ban-pick-lien-quan/">Ban/Pick Liên Quân</Link>
             <Link href="/tier-list-lien-quan/">Tier list Liên Quân</Link>
             <Link href="/tuong/">Danh sách tướng</Link>
+            <Link href="/huong-dan/">Cẩm nang Liên Quân</Link>
           </div>
           <div>
             <h3>Mini game</h3>
@@ -119,7 +122,9 @@ export default function SiteLayout({ children, breadcrumbs, showTopAd = false }:
           </div>
         </div>
         <div className="footer-bottom">
-          <Link href="/privacy-policy/">Privacy Policy</Link> · <a href="/sitemap.xml">Sitemap</a> ·{' '}
+          <Link href="/gioi-thieu/">Giới thiệu</Link> · <Link href="/lien-he/">Liên hệ</Link> ·{' '}
+          <Link href="/dieu-khoan/">Điều khoản</Link> · <Link href="/privacy-policy/">Chính sách bảo mật</Link> ·{' '}
+          <a href="/sitemap.xml">Sitemap</a> ·{' '}
           <span>© 2026 RandomTuong.vn</span>
         </div>
       </footer>

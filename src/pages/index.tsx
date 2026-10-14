@@ -14,12 +14,9 @@ import { absoluteUrl, DEFAULT_OG_IMAGE, heroUrl } from '@/lib/seo';
 import { pickRandom, normalize } from '@/lib/random';
 import { MINI_GAMES, ROLE_PAGES, TEAM_LANES, TIER_LABELS } from '@/data/site';
 import Seo from '@/components/Seo';
+import AdSlot from '@/components/AdSlot';
 import SiteLayout from '@/components/SiteLayout';
 
-const APP_CONFIG = {
-  gaMeasurementId: '',
-  adsenseClient: '',
-};
 
 const SEO_FAQS = [
   {
@@ -170,22 +167,6 @@ export default function Home() {
     },
     [router]
   );
-
-  useEffect(() => {
-    if (APP_CONFIG.gaMeasurementId) {
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(APP_CONFIG.gaMeasurementId)}`;
-      document.head.appendChild(script);
-    }
-    if (APP_CONFIG.adsenseClient) {
-      const script = document.createElement('script');
-      script.async = true;
-      script.crossOrigin = 'anonymous';
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(APP_CONFIG.adsenseClient)}`;
-      document.head.appendChild(script);
-    }
-  }, []);
 
   const getFilteredHeroes = useCallback((): Hero[] => {
     return ACTIVE_HEROES.filter(hero => {
@@ -623,9 +604,7 @@ export default function Home() {
             </aside>
           </div>
 
-          <div className="ad" data-ad-slot="mid">
-            AdSense ready - Mobile banner 320x100
-          </div>
+          <AdSlot slot="mid" />
         </section>
 
         {/* ── Team 5v5 Tab ── */}
@@ -670,9 +649,7 @@ export default function Home() {
               ⚔️ Random đội 5v5
             </button>
           </div>
-          <div className="ad" data-ad-slot="mid">
-            AdSense ready - Mobile banner 320x100
-          </div>
+          <AdSlot slot="mid" />
         </section>
 
         {/* ── Ban/Pick Tab ── */}
@@ -751,9 +728,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="ad" data-ad-slot="mid">
-            AdSense ready - Mobile banner 320x100
-          </div>
+          <AdSlot slot="mid" />
         </section>
 
         {/* ── Meta Tab ── */}
@@ -823,9 +798,7 @@ export default function Home() {
               })}
             </div>
           </div>
-          <div className="ad" data-ad-slot="mid">
-            AdSense ready - Mobile banner 320x100
-          </div>
+          <AdSlot slot="mid" />
         </section>
 
         <section className="game-strip" aria-label="Mini game Liên Quân">
@@ -872,6 +845,7 @@ export default function Home() {
               <Link href="/tier-list-lien-quan/">Tier list Liên Quân</Link>
               <Link href="/tuong/">Danh sách tướng</Link>
               <Link href="/mini-game/">Mini game Liên Quân</Link>
+              <Link href="/huong-dan/">Cẩm nang Liên Quân</Link>
               {ROLE_PAGES.map(page => (
                 <Link key={page.slug} href={`/vai-tro/${page.slug}/`}>
                   Tướng {page.label}

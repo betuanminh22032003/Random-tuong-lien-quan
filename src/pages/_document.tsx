@@ -1,4 +1,5 @@
 import { Html, Head, Main, NextScript } from 'next/document';
+import { APP_CONFIG } from '@/lib/config';
 
 // Applied before first paint so light-theme users don't see a dark flash.
 const THEME_BOOT = `try{var t=localStorage.getItem('theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark')}catch(e){}`;
@@ -18,6 +19,26 @@ export default function Document() {
         <link rel="preconnect" href="https://lienquan.garena.vn" crossOrigin="" />
         <link rel="dns-prefetch" href="https://lienquan.garena.vn" />
         <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
+        {APP_CONFIG.adsenseClient && (
+          <>
+            <meta name="google-adsense-account" content={APP_CONFIG.adsenseClient} />
+            <script
+              async
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${APP_CONFIG.adsenseClient}`}
+              crossOrigin="anonymous"
+            />
+          </>
+        )}
+        {APP_CONFIG.gaMeasurementId && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${APP_CONFIG.gaMeasurementId}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${APP_CONFIG.gaMeasurementId}');`,
+              }}
+            />
+          </>
+        )}
       </Head>
       <body>
         <Main />

@@ -209,6 +209,22 @@ export default function HeroPage({ hero }: Props) {
           </div>
         )}
 
+        {rolePage && (
+          <div className="panel" style={{ marginBottom: '16px' }}>
+            <div className="detail-section-title">Cách chơi {hero.name} theo vai trò {rolePage.label}</div>
+            <p className="source-note" style={{ fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+              {rolePage.intro} {rolePage.tips} {hero.name} được xếp độ khó {diffText} và lane gợi ý {hero.lane}
+              {hero.difficulty === 1
+                ? ' — phù hợp cho người mới tập vai trò này.'
+                : hero.difficulty === 3
+                  ? ' — nên luyện ở chế độ thường trước khi mang vào xếp hạng.'
+                  : '.'}{' '}
+              Xem thêm <Link href="/huong-dan/vi-tri-trong-lien-quan/">nhiệm vụ của từng vị trí</Link> và{' '}
+              <Link href="/huong-dan/tuong-de-choi-cho-nguoi-moi/">tướng dễ chơi cho người mới</Link>.
+            </p>
+          </div>
+        )}
+
         {sameRoleHeroes.length > 0 && (
           <div className="panel" style={{ marginBottom: '16px' }}>
             <div className="detail-section-title">

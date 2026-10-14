@@ -43,8 +43,25 @@ export default function PrivacyPolicy() {
             và cá nhân hóa/không cá nhân hóa quảng cáo theo chính sách của Google.
           </p>
           <p>
-            Bạn có thể đọc thêm tại{' '}
-            <a href="https://policies.google.com/privacy" rel="noopener noreferrer">
+            Các nhà cung cấp bên thứ ba, bao gồm Google, sử dụng cookie để phân phát quảng cáo dựa
+            trên những lần truy cập trước đây của bạn vào website này hoặc các website khác. Cookie
+            quảng cáo cho phép Google và đối tác hiển thị quảng cáo phù hợp với bạn.
+          </p>
+          <p>
+            Bạn có thể tắt quảng cáo được cá nhân hóa tại{' '}
+            <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer">
+              Cài đặt quảng cáo của Google
+            </a>{' '}
+            hoặc tại{' '}
+            <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer">
+              aboutads.info
+            </a>
+            . Xem cách Google sử dụng dữ liệu tại{' '}
+            <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer">
+              policies.google.com/technologies/partner-sites
+            </a>{' '}
+            và{' '}
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
               Google Privacy Policy
             </a>
             .

@@ -18,6 +18,7 @@ const RULES = [
   { test: p => p === '/tier-list-lien-quan/', changefreq: 'weekly', priority: '0.9' },
   { test: p => /^\/(random-tuong|random-doi|ban-pick)-lien-quan\/$/.test(p), changefreq: 'weekly', priority: '0.9' },
   { test: p => p === '/tuong/', changefreq: 'weekly', priority: '0.8' },
+  { test: p => p.startsWith('/huong-dan/'), changefreq: 'monthly', priority: '0.8' },
   { test: p => p.startsWith('/vai-tro/'), changefreq: 'weekly', priority: '0.8' },
   { test: p => p.startsWith('/tuong/'), changefreq: 'monthly', priority: '0.7' },
   { test: () => true, changefreq: 'yearly', priority: '0.3' },
@@ -122,6 +123,13 @@ Sitemap: ${SITE_URL}/sitemap.xml
 for (const dir of [OUT_DIR, ...MIRRORS]) {
   await fs.writeFile(path.join(dir, 'sitemap.xml'), sitemap, 'utf8');
   await fs.writeFile(path.join(dir, 'robots.txt'), robots, 'utf8');
+}
+
+// ads.txt is required by AdSense once a publisher ID is set in src/lib/config.ts.
+const adsClient = (await fs.readFile('src/lib/config.ts', 'utf8')).match(/adsenseClient:\s*'ca-(pub-\d+)'/)?.[1];
+if (adsClient) {
+  await fs.writeFile(path.join(OUT_DIR, 'ads.txt'), `google.com, ${adsClient}, DIRECT, f08c47fec0942fa0\n`, 'utf8');
+  console.log(`ads.txt: ${adsClient}`);
 }
 
 console.log(`Sitemap: ${entries.length} URLs → ${OUT_DIR}/sitemap.xml (+ ${MIRRORS.join(', ')})`);
